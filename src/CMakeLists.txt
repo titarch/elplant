@@ -1,6 +1,7 @@
-# Add new subdirectories here
+add_subdirectory(grammar)
+add_subdirectory(engine)
 
 add_executable(${EXECUTABLE_NAME} main.cpp)
 set(EXECUTABLE_OUTPUT_PATH ..)
 
-target_link_libraries(${EXECUTABLE_NAME} sfml-window sfml-graphics)
+target_link_libraries(${EXECUTABLE_NAME} PRIVATE grammar engine)
