@@ -20,7 +20,10 @@ void Grammar::generate_rec(String &buffer, const String &cur_rule, int max_rec,
                              int cur_rec) const {
     if (cur_rec >= max_rec)
     {
+        if (buffer.size() + cur_rule.size() > buffer.capacity())
+            buffer.reserve(buffer.size() * 2);
         buffer.append(cur_rule);
+
         return;
     }
     for (unsigned i = 0; i < cur_rule.size(); i++)

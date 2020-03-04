@@ -26,7 +26,7 @@ int main()
     Grammar g("FX", 30);
     g.add_rule('Y', "-FX-Y");
     g.add_rule('X', "X+YF+");
-    std::cout << g.generate() << std::endl;
+    std::cout << g.generate(3) << std::endl;
       */
 
     return 0;
