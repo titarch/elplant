@@ -20,7 +20,7 @@ static sf::Vertex convert(Vec2f const& v) {
 lines Engine::draw(const std::string& s, double angle, double length) const {
     lines lines;
     std::stack<Turtle> turtles;
-    turtles.emplace(Vec2f{{(double) width_ / 2, (double) height_}}, 0);
+    turtles.emplace(Vec2f{{(double) width_ / 2, (double) height_ / 2}}, 0);
     for (char const& c : s) {
         auto& turtle = turtles.top();
         switch (c) {
