@@ -4,9 +4,36 @@
 
 #include "Grammar.h"
 
-void Grammar::add_rule(char lvalue, const String &rvalue) {
-    rules_.insert({lvalue, rvalue});
+void Rule::add_rule(const String &rvalue, unsigned weight) {
+    rvalues_.push_back(rvalue);
+    weights_.push_back(weight);
 
+    update_summed_weights();
+}
+
+String Rule::get_rule() const {
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    std::uniform_int_distribution<int> uni(0, weight_sum_ - 1);
+    unsigned rnd = uni(gen);
+    for(unsigned i = 0; i < weights_.size(); i++) {
+        if(rnd < weights_[i])
+            return rvalues_[i];
+        rnd -= weights_[i];
+    }
+    return "";
+}
+
+void Rule::update_summed_weights() {
+    weight_sum_ = std::accumulate(weights_.begin(), weights_.end(), 0u);
+}
+
+void Grammar::add_rule(char lvalue, const String &rvalue, unsigned weight) {
+    auto found_rule = rules_.find(lvalue);
+    if (found_rule == rules_.end())
+        rules_.insert({lvalue, Rule(lvalue, rvalue)});
+    else
+        found_rule->second.add_rule(rvalue, weight);
 }
 
 String Grammar::generate(int n) const {
@@ -32,6 +59,6 @@ void Grammar::generate_rec(String &buffer, const String &cur_rule, int max_rec,
         if (found_rule == rules_.end())
             buffer.push_back(cur_rule[i]);
         else
-            generate_rec(buffer, found_rule->second, max_rec, cur_rec + 1);
+            generate_rec(buffer, found_rule->second.get_rule(), max_rec, cur_rec + 1);
     }
 }
