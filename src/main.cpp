@@ -1,4 +1,5 @@
 #include <SFML/Graphics.hpp>
+#include "grammar/Grammar.h"
 
 int main()
 {
@@ -19,6 +20,14 @@ int main()
         window.draw(shape);
         window.display();
     }
+
+     /* Grammar test
+      *
+    Grammar g("FX", 30);
+    g.add_rule('Y', "-FX-Y");
+    g.add_rule('X', "X+YF+");
+    std::cout << g.generate(3) << std::endl;
+      */
 
     return 0;
 }
