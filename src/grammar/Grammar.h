@@ -42,7 +42,7 @@ private:
 
 class Grammar {
 public:
-    Grammar(const String axiom, float angle): axiom_(axiom), angle_(angle) {}
+    Grammar(const String axiom): axiom_(axiom){}
 
     void add_rule(char lvalue, const String &rvalue, unsigned weight = 1);
     String generate(int n) const;
@@ -52,7 +52,6 @@ private:
 
     const String axiom_;
     std::map<char, Rule> rules_;
-    float angle_;
 };
 
 
