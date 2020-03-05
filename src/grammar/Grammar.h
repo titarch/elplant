@@ -7,24 +7,50 @@
 
 #include <iostream>
 #include <string>
+#include <vector>
 #include <map>
 #include <utility>
+#include <random>
 
 using String = std::string;
 
+class Rule {
+public:
+    Rule(char lvalue, const String& rvalue, unsigned weight = 1) : lvalue_(lvalue) {
+        rvalues_ = std::vector<String>();
+        rvalues_.push_back(rvalue);
+
+        weights_ = std::vector<unsigned>();
+        weights_.push_back(weight);
+
+        update_summed_weights();
+    }
+
+    void add_rule(const String& rvalue, unsigned weight = 1);
+    [[nodiscard]] String get_rule() const;
+
+private:
+    char lvalue_;
+    std::vector<String> rvalues_;
+    std::vector<unsigned> weights_;
+
+    unsigned weight_sum_ = 0;
+
+    void update_summed_weights();
+};
+
+
 class Grammar {
 public:
-    Grammar(String&& axiom, float angle) : axiom_(axiom), angle_(angle) {}
+    explicit Grammar(String&& axiom) : axiom_(axiom) {}
 
-    void add_rule(char lvalue, const String& rvalue);
+    void add_rule(char lvalue, const String& rvalue, unsigned weight = 1);
     [[nodiscard]] String generate(int n) const;
-
 private:
     void generate_rec(String& buffer, const String& cur_rule, int max_rec, int cur_rec) const;
 
     const String axiom_;
-    std::map<char, String> rules_;
-    float angle_;
+    std::map<char, Rule> rules_;
 };
 
 

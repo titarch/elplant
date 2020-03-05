@@ -6,7 +6,7 @@ int main()
 {
     Engine eng(1920, 1080);
 
-    Grammar g("FX", 30);
+    Grammar g("FX");
     g.add_rule('Y', "-FX-Y");
     g.add_rule('X', "X+YF+");
 
