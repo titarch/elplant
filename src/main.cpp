@@ -1,4 +1,5 @@
 #include <SFML/Graphics.hpp>
+#include <chrono>
 #include "grammar/Grammar.h"
 #include "engine/Engine.h"
 
@@ -10,7 +11,7 @@ int main()
     g.add_rule('Y', "-FX-Y");
     g.add_rule('X', "X+YF+");
 
-    eng.render(eng.draw(g.generate(10), 90, 10));
+    eng.render(g, 10, 90, 10);
 
     return 0;
 }

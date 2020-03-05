@@ -7,6 +7,7 @@
 
 #include <string>
 #include <SFML/Graphics.hpp>
+#include "../grammar/Grammar.h"
 #include "../utils/Vector.h"
 
 using line = std::pair<sf::Vertex, sf::Vertex>;
@@ -27,7 +28,7 @@ public:
     Engine(unsigned width, unsigned height) : width_(width), height_(height) {}
 
     [[nodiscard]] lines draw(std::string const& s, double angle, double length) const;
-    void render(lines const& lines) const;
+    void render(const Grammar &g, int n,  double angle, double length) const;
 protected:
     unsigned width_, height_;
 };

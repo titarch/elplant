@@ -50,7 +50,8 @@ lines Engine::draw(const std::string& s, double angle, double length) const {
     return lines;
 }
 
-void Engine::render(const lines& lines) const {
+void Engine::render(const Grammar &g, int n, double angle, double length) const {
+    auto lines = draw(g.generate(n), angle, length);
     sf::RenderWindow window(sf::VideoMode(width_, height_), "sfml-elplant");
 
     while (window.isOpen())
@@ -58,10 +59,17 @@ void Engine::render(const lines& lines) const {
         sf::Event event{};
         while (window.pollEvent(event))
         {
-            if (event.type == sf::Event::Closed)
-                window.close();
+            switch (event.type){
+                case(sf::Event::Closed):
+                    window.close();
+                    break;
+                case (sf::Event::KeyPressed):
+                    lines = draw(g.generate(n), angle, length);
+                    break;
+                default:
+                    break;
+            }
         }
-
         window.clear();
 
         for (auto const& line : lines) {
