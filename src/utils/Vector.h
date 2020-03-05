@@ -7,7 +7,7 @@
 #include <array>
 #include <execution>
 
-template<typename T, size_t D = 2>
+template<typename T, size_t D>
 class Vector {
 public:
     using Ts = std::array<T, D>;
@@ -16,7 +16,7 @@ public:
 
     Vector() : pts_{} {}
 
-    explicit Vector(Ts const& pts) : pts_(pts) {}
+    Vector(Ts const& pts) : pts_(pts) {}
 
     [[nodiscard]] T sqrMagnitude() const {
         return std::reduce(std::execution::par, pts_.cbegin(), pts_.cend(),
@@ -138,5 +138,13 @@ inline Vector<T, D> operator^(Vector<T, D> lhs, Vector<T, D> const& rhs) {
 }
 
 using Vec2f = Vector<double, 2>;
+using Vec3f = Vector<double, 3>;
+
+namespace UnitVec3f {
+    const auto U = Vec3f{{0, 1, 0}};
+    const auto L = Vec3f{{1, 0, 0}};
+    const auto H = Vec3f{{0, 0, 1}};
+}
+
 
 #endif //RAYTRACER_VECTOR_H
