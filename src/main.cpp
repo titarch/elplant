@@ -2,8 +2,7 @@
 #include "grammar/Grammar.h"
 #include "engine/Engine.h"
 
-int main()
-{
+int main() {
     Engine eng(1920, 1080);
 
     Grammar g("A");
