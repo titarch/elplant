@@ -12,10 +12,8 @@ void Rule::add_rule(const String &rvalue, unsigned weight) {
 }
 
 String Rule::get_rule() const {
-    std::random_device rd;
-    std::mt19937 gen(rd());
-    std::uniform_int_distribution<int> uni(0, weight_sum_ - 1);
-    unsigned rnd = uni(gen);
+    // FIXME: Use better random function
+    unsigned rnd = (rand() % (weight_sum_));
     for(unsigned i = 0; i < weights_.size(); i++) {
         if(rnd < weights_[i])
             return rvalues_[i];
