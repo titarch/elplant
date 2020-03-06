@@ -1,6 +1,0 @@
-[submodule "gml"]
-	path = gml
-	url = https://github.com/ilmola/gml.git
-[submodule "generator"]
-	path = generator
-	url = https://github.com/ilmola/generator.git
