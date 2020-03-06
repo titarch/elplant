@@ -89,10 +89,10 @@ cylinders Engine::draw(const std::string& s, double angle, double length, double
             default:
                 if (!isalpha(c))
                     throw std::invalid_argument("Bad character " + std::to_string(c));
-                const auto& dl = turtle.d * length;
-                Cylinder cyl(turtle.o, dl, turtle.r);
+                const auto& h = turtle.d * length;
+                Cylinder cyl(turtle.o, h, turtle.r);
                 cyls.push_back(cyl);
-                turtle.o += dl;
+                turtle.o += h;
         }
     }
     return cyls;

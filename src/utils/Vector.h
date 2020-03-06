@@ -110,7 +110,7 @@ inline Vector<T, D> operator-(Vector<T, D> lhs, Vector<T, D> const& rhs) {
 
 template<typename T, size_t D>
 inline T operator*(Vector<T, D> const& lhs, Vector<T, D> const& rhs) {
-    return std::inner_product(lhs.cbegin(), lhs.cend(), rhs.cbegin(), 0);
+    return std::inner_product(lhs.cbegin(), lhs.cend(), rhs.cbegin(), 0.0);
 }
 
 template<typename T, size_t D>
