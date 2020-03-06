@@ -19,7 +19,7 @@ public:
     Vector(Ts const& pts) : pts_(pts) {}
 
     [[nodiscard]] T sqrMagnitude() const {
-        return std::reduce(std::execution::par, pts_.cbegin(), pts_.cend(),
+        return std::reduce(std::execution::par, pts_.cbegin(), pts_.cend(), 0.0,
                            [](T const& x, T const& y) { return x * x + y * y; });
     }
 
