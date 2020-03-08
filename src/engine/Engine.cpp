@@ -55,7 +55,7 @@ cylinders Engine::draw(const std::string& s, double angle, double length, double
     angle = angle * M_PI / 180;
     cylinders cyls;
     std::stack<Cylinder> turtles;
-    turtles.emplace(Vec3f{}, UnitVec3f::U, thickness);
+    turtles.emplace(Vec3f{}, UnitVec3f::U, thickness, length / 2);
     for (char const& c : s) {
         auto& turtle = turtles.top();
         switch (c) {
@@ -90,7 +90,7 @@ cylinders Engine::draw(const std::string& s, double angle, double length, double
                 if (!isalpha(c))
                     throw std::invalid_argument("Bad character " + std::to_string(c));
                 const auto& h = turtle.d * length;
-                Cylinder cyl(turtle.o, h, turtle.r);
+                Cylinder cyl(turtle.o, h, turtle.r, turtle.h);
                 cyls.push_back(cyl);
                 turtle.o += h;
         }
@@ -125,4 +125,47 @@ void Engine::render(const Grammar& g, int n, double angle, double length) const 
 
         window.display();
     }
+}
+
+Mesh Cylinder::to_mesh(unsigned n, unsigned rings) const {
+    Mesh m;
+    unsigned i, ring;
+    double a,da,c,s,z;
+    da = 2 * M_PI/double(n-1);
+    double dh = 2 * h / rings;
+    for (a = 0.0, i = 0; i < n; a += da, i++)
+    {
+        c = r * cos(a);
+        s = r * sin(a);
+        for (z = o[2] - h, ring = 0; ring < rings; z += dh, ring++)
+        {
+            m.vertices.emplace_back(Vec3f{{c, s, z}} + o);
+            m.normals.emplace_back(Vec3f{{c - o[0], s - o[1], 0}}.normalized());
+            if (ring == rings - 1)
+                continue;
+            unsigned e0, e1, e2, e3;
+            e0 = i * rings + ring;
+            e1 = ((i + 1)) % n * rings + ring;
+            e2 = i * rings + ring + 1;
+            e3 = ((i + 1)) % n * rings + ring + 1;
+            m.faces.emplace_back(std::array<unsigned, 3>{e0, e1, e3});
+            m.faces.emplace_back(std::array<unsigned, 3>{e0, e3, e2});
+        }
+    }
+    return m;
+}
+
+void Mesh::save_obj(const std::string &path) const {
+    std::ofstream out(path);
+    for (auto const& v: vertices)
+        out << "v " << v[0] << " " << v[1] << " " << v[2] << "\n";
+    out << "\n";
+
+    for (auto const& n: normals)
+        out << "vn " << n[0] << " " << n[1] << " " << n[2] << "\n";
+    out << "\n";
+
+    for (auto const& f: faces)
+        out << "f " << f[0] + 1 << " " << f[1] + 1 << " " << f[2] + 1 << " " << "\n";
+
 }

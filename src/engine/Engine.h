@@ -6,6 +6,7 @@
 #define ELPLANT_ENGINE_H
 
 #include <string>
+#include <fstream>
 #include <SFML/Graphics.hpp>
 #include "../grammar/Grammar.h"
 #include "../utils/Vector.h"
@@ -13,15 +14,25 @@
 using line = std::pair<sf::Vertex, sf::Vertex>;
 using lines = std::vector<line>;
 
+struct Mesh {
+    std::vector<Vec3f> vertices;
+    std::vector<Vec3f> normals;
+    std::vector<std::array<unsigned, 3>> faces;
+
+    void save_obj(const std::string &path) const;
+};
+
 struct Cylinder {
     Vec3f o;
     Vec3f d;
-    double r;
+    double r, h;
 
-    Cylinder(const Vec3f& o, const Vec3f& d, double r) : o(o), d(d), r(r) {}
+    Cylinder(const Vec3f& o, const Vec3f& d, double r, double h) : o(o), d(d), r(r), h(h) {}
+
+    Mesh to_mesh(unsigned n, unsigned rings) const;
 
     friend std::ostream& operator<<(std::ostream& os, Cylinder const& c) {
-        return os << "C[O: " << c.o << ", D: " << c.d << ", R: " << c.r << "]";
+        return os << "C[O: " << c.o << ", D: " << c.d << ", R: " << c.r << ", H:" << c.h << "]";
     }
 };
 

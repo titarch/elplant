@@ -10,8 +10,11 @@ int main() {
     g.add_rule('B', "A&F^CFB^F^D^^-F-D^|F^B|FC^F^A//");
     g.add_rule('C', "|D^|F^B-F+C^F^A&&FA&F^C+F+B^F^D//");
     g.add_rule('D', "|CFB-F+B|FA&F^A&&FB-F+B|FC//");
-    cylinders cyls = eng.draw(g.generate(2), 90, 1, 1);
+    cylinders cyls = eng.draw(g.generate(2), 90, 3, 1);
     for (const auto& c : cyls)
         std::cout << c << std::endl;
+    Mesh m = cyls[0].to_mesh(32, 8);
+    std::cout << m.vertices.size() << std::endl;
+    m.save_obj("cylinder.obj");
     return 0;
 }
