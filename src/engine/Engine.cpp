@@ -169,3 +169,12 @@ void Mesh::save_obj(const std::string &path) const {
         out << "f " << f[0] + 1 << " " << f[1] + 1 << " " << f[2] + 1 << " " << "\n";
 
 }
+
+void Mesh::merge_mesh(const Mesh& m) {
+    unsigned faces_size = vertices.size();
+    vertices.insert(vertices.end(), m.vertices.begin(), m.vertices.end());
+    normals.insert(normals.end(), m.normals.begin(), m.normals.end());
+    for (auto face : m.faces)
+        faces.emplace_back(std::array<unsigned, 3>{face[0] + faces_size, face[1] + faces_size, face[2] + faces_size});
+
+}

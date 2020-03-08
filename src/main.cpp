@@ -13,8 +13,9 @@ int main() {
     cylinders cyls = eng.draw(g.generate(2), 90, 3, 1);
     for (const auto& c : cyls)
         std::cout << c << std::endl;
-    Mesh m = cyls[0].to_mesh(32, 8);
-    std::cout << m.vertices.size() << std::endl;
+    Mesh m;
+    for (auto const& c: cyls)
+        m.merge_mesh(c.to_mesh(32, 8));
     m.save_obj("cylinder.obj");
     return 0;
 }

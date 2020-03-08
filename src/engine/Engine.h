@@ -19,7 +19,8 @@ struct Mesh {
     std::vector<Vec3f> normals;
     std::vector<std::array<unsigned, 3>> faces;
 
-    void save_obj(const std::string &path) const;
+    void save_obj(const std::string& path) const;
+    void merge_mesh(const Mesh& m);
 };
 
 struct Cylinder {
