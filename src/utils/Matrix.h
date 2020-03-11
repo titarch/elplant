@@ -49,9 +49,9 @@ namespace RotMat3f {
 
     Mat3f H(double a) {
         return Mat3f(Mat3f::grid_t{
-           Mat3f::row_t{1, 0, 0},
-           {0, std::cos(a), -std::sin(a)},
-           {0, std::sin(a), std::cos(a)}
+                Mat3f::row_t{1, 0, 0},
+                {0, std::cos(a), -std::sin(a)},
+                {0, std::sin(a), std::cos(a)}
         });
     }
 }
