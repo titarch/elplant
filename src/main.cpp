@@ -16,7 +16,7 @@ int main() {
         std::cout << c << std::endl;
     Mesh m;
     for (auto const& c: cyls)
-        m.merge_mesh(c.to_mesh(32, 8));
+        m.merge_mesh(c.to_mesh(8, 8));
     m.save_obj("cylinder.obj");
     return 0;
 }
