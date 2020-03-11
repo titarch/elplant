@@ -147,22 +147,13 @@ inline Vector<T, D> operator^(Vector<T, D> lhs, Vector<T, D> const& rhs) {
 using Vec2f = Vector<double, 2>;
 using Vec3f = Vector<double, 3>;
 
-inline Vec3f operator^(Vec3f const& lhs, Vec3f const& rhs) {
-    Vec3f res;
-    res[0] = lhs[1] * rhs[2] - lhs[2] * rhs[1];
-    res[1] = lhs[2] * rhs[0] - lhs[0] * rhs[2];
-    res[2] = lhs[0] * rhs[1] - lhs[1] * rhs[0];
-
-    return res;
-}
-
 namespace UnitVec3f {
     const auto U = Vec3f{{0, 1, 0}};
     const auto L = Vec3f{{1, 0, 0}};
     const auto H = Vec3f{{0, 0, 1}};
 }
 
-template<> inline Vector<double, 3>& Vector<double, 3>::operator^=(const Vector<double, 3>& rhs) {
+template<> inline Vec3f& Vec3f::operator^=(const Vec3f& rhs) {
     float x = pts_[1] * rhs.pts_[2] - pts_[2] * rhs.pts_[1];
     float y = pts_[2] * rhs.pts_[0] - pts_[0] * rhs.pts_[2];
     float z = pts_[0] * rhs.pts_[1] - pts_[1] * rhs.pts_[0];
