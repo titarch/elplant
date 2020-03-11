@@ -55,7 +55,7 @@ cylinders Engine::draw(const std::string& s, double angle, double length, double
     angle = angle * M_PI / 180;
     cylinders cyls;
     std::stack<Cylinder> turtles;
-    turtles.emplace(Vec3f{}, UnitVec3f::H, thickness, length);
+    turtles.emplace(Vec3f{}, UnitVec3f::L, thickness, length);
     for (char const& c : s) {
         auto& turtle = turtles.top();
         switch (c) {
@@ -89,10 +89,8 @@ cylinders Engine::draw(const std::string& s, double angle, double length, double
             default:
                 if (!isalpha(c))
                     throw std::invalid_argument("Bad character " + std::to_string(c));
-                const auto& h = turtle.d * length;
-                Cylinder cyl(turtle.o, h, turtle.r, turtle.h);
-                cyls.push_back(cyl);
-                turtle.o += h;
+                cyls.push_back(turtle);
+                turtle.o += turtle.d * length;
         }
     }
     return cyls;
