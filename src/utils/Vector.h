@@ -80,7 +80,8 @@ public:
     }
 
     Vector& operator^=(Vector const& rhs) {
-        // Implement cross product
+        (void) rhs;
+        throw "Cross product not implemented for dimension " + std::to_string(D);
         return *this;
     }
 
@@ -153,5 +154,14 @@ namespace UnitVec3f {
     const auto H = Vec3f{{0, 0, 1}};
 }
 
+template<> inline Vector<double, 3>& Vector<double, 3>::operator^=(const Vector<double, 3>& rhs) {
+    float x = pts_[1] * rhs.pts_[2] - pts_[2] * rhs.pts_[1];
+    float y = pts_[2] * rhs.pts_[0] - pts_[0] * rhs.pts_[2];
+    float z = pts_[0] * rhs.pts_[1] - pts_[1] * rhs.pts_[0];
+    pts_[0] = x;
+    pts_[1] = y;
+    pts_[2] = z;
+    return *this;
+}
 
 #endif //ELPLANT_VECTOR_H
