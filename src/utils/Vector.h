@@ -146,6 +146,15 @@ inline Vector<T, D> operator^(Vector<T, D> lhs, Vector<T, D> const& rhs) {
 using Vec2f = Vector<double, 2>;
 using Vec3f = Vector<double, 3>;
 
+inline Vec3f operator^(Vec3f const& lhs, Vec3f const& rhs) {
+    Vec3f res;
+    res[0] = lhs[1] * rhs[2] - lhs[2] * rhs[1];
+    res[1] = lhs[2] * rhs[0] - lhs[0] * rhs[2];
+    res[2] = lhs[0] * rhs[1] - lhs[1] * rhs[0];
+
+    return res;
+}
+
 namespace UnitVec3f {
     const auto U = Vec3f{{0, 1, 0}};
     const auto L = Vec3f{{1, 0, 0}};
