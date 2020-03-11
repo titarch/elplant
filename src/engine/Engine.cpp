@@ -55,7 +55,7 @@ cylinders Engine::draw(const std::string& s, double angle, double length, double
     angle = angle * M_PI / 180;
     cylinders cyls;
     std::stack<Cylinder> turtles;
-    turtles.emplace(Vec3f{}, UnitVec3f::H, thickness, length / 2);
+    turtles.emplace(Vec3f{}, UnitVec3f::H, thickness, length);
     for (char const& c : s) {
         auto& turtle = turtles.top();
         switch (c) {
@@ -140,7 +140,7 @@ Mesh Cylinder::to_mesh(unsigned n, unsigned rings) const {
     unsigned i, ring;
     double a, da, c, s, z;
     da = 2 * M_PI / double(n - 1);
-    double dh = 2 * h / (rings - 1);
+    double dh = h / (rings - 1);
     for (a = 0.0, i = 0; i < n; a += da, i++) {
         c = r * cos(a);
         s = r * sin(a);
