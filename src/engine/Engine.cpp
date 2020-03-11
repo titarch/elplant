@@ -6,8 +6,8 @@
 #include <cctype>
 #include <cmath>
 #include <iostream>
+#include <yaml-cpp/yaml.h>
 #include "Engine.h"
-#include "../utils/Vector.h"
 #include "../utils/Matrix.h"
 
 static Vec2f angle_dir(double t) {
@@ -127,18 +127,24 @@ void Engine::render(const Grammar& g, int n, double angle, double length) const 
     }
 }
 
+void Engine::save(const cylinders& cls, const char *path) {
+    YAML::Emitter o;
+    o << YAML::BeginMap << YAML::Key << "objects" << YAML::Value << YAML::BeginMap << YAML::Key << "solids"
+      << YAML::Value << YAML::BeginSeq << YAML::Flow << cls << YAML::EndSeq << YAML::EndMap << YAML::EndMap;
+    std::ofstream file(path);
+    file << o.c_str();
+}
+
 Mesh Cylinder::to_mesh(unsigned n, unsigned rings) const {
     Mesh m;
     unsigned i, ring;
-    double a,da,c,s,z;
-    da = 2 * M_PI/double(n-1);
+    double a, da, c, s, z;
+    da = 2 * M_PI / double(n - 1);
     double dh = 2 * h / rings;
-    for (a = 0.0, i = 0; i < n; a += da, i++)
-    {
+    for (a = 0.0, i = 0; i < n; a += da, i++) {
         c = r * cos(a);
         s = r * sin(a);
-        for (z = o[2] - h, ring = 0; ring < rings; z += dh, ring++)
-        {
+        for (z = o[2] - h, ring = 0; ring < rings; z += dh, ring++) {
             m.vertices.emplace_back(Vec3f{{c, s, z}} + o);
             m.normals.emplace_back(Vec3f{{c - o[0], s - o[1], 0}}.normalized());
             if (ring == rings - 1)
@@ -155,7 +161,7 @@ Mesh Cylinder::to_mesh(unsigned n, unsigned rings) const {
     return m;
 }
 
-void Mesh::save_obj(const std::string &path) const {
+void Mesh::save_obj(const std::string& path) const {
     std::ofstream out(path);
     for (auto const& v: vertices)
         out << "v " << v[0] << " " << v[1] << " " << v[2] << "\n";

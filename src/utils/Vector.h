@@ -91,6 +91,13 @@ public:
         return os << ")";
     }
 
+    friend YAML::Emitter& operator<<(YAML::Emitter& out, Vector const& v) {
+        out << YAML::Flow << YAML::BeginSeq;
+        for (const T& e: v)
+            out << e;
+        return out << YAML::EndSeq;
+    }
+
 private:
     Ts pts_;
 };
@@ -147,4 +154,4 @@ namespace UnitVec3f {
 }
 
 
-#endif //RAYTRACER_VECTOR_H
+#endif //ELPLANT_VECTOR_H

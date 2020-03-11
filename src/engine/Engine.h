@@ -8,6 +8,7 @@
 #include <string>
 #include <fstream>
 #include <SFML/Graphics.hpp>
+#include <yaml-cpp/yaml.h>
 #include "../grammar/Grammar.h"
 #include "../utils/Vector.h"
 
@@ -35,6 +36,14 @@ struct Cylinder {
     friend std::ostream& operator<<(std::ostream& os, Cylinder const& c) {
         return os << "C[O: " << c.o << ", D: " << c.d << ", R: " << c.r << ", H:" << c.h << "]";
     }
+    friend YAML::Emitter& operator << (YAML::Emitter& out, Cylinder const& c) {
+        return out << YAML::BeginMap
+        << YAML::Key << "type" << YAML::Value << "cylinder"
+        << YAML::Key << "base" << YAML::Value << c.o
+        << YAML::Key << "axis" << YAML::Value << c.d * c.h
+        << YAML::Key << "radius" << YAML::Value << c.r
+        << YAML::EndMap;
+    }
 };
 
 using cylinders = std::vector<Cylinder>;
@@ -57,6 +66,7 @@ public:
     [[nodiscard]] lines draw(std::string const& s, double angle, double length) const;
     [[nodiscard]] cylinders draw(std::string const& s, double angle, double length, double thickness) const;
     void render(const Grammar& g, int n, double angle, double length) const;
+    void save(cylinders const& cls, const char* path);
 protected:
     unsigned width_, height_;
 };
