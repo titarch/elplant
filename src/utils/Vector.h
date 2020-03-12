@@ -6,6 +6,7 @@
 #include <ostream>
 #include <array>
 #include <execution>
+#include "yaml-cpp/yaml.h"
 
 template<typename T, size_t D>
 class Vector {
@@ -84,6 +85,11 @@ public:
         return *this;
     }
 
+
+    double get_angle_U() const;
+    double get_angle_L() const;
+    double get_angle_H() const;
+
     friend std::ostream& operator<<(std::ostream& os, Vector const& v) {
         os << "( ";
         for (const T& e: v)
@@ -161,6 +167,33 @@ template<> inline Vec3f& Vec3f::operator^=(const Vec3f& rhs) {
     pts_[1] = y;
     pts_[2] = z;
     return *this;
+}
+
+template<> inline double Vec3f::get_angle_U() const {
+    Vec3f norm = normalized();
+    double angle = acos(norm * UnitVec3f::U);
+    Vec3f cross = UnitVec3f::U ^ norm;
+    if ((UnitVec3f::L * cross) >= 0)
+        return -angle;
+    return angle;
+}
+
+template<> inline double Vec3f::get_angle_L() const {
+    Vec3f norm = normalized();
+    double angle = acos(norm * UnitVec3f::L);
+    Vec3f cross = UnitVec3f::L ^ norm;
+    if ((UnitVec3f::H * cross) < 0)
+        return -angle;
+    return angle;
+}
+
+template<> inline double Vec3f::get_angle_H() const {
+    Vec3f norm = normalized();
+    double angle = acos(norm * UnitVec3f::H);
+    Vec3f cross = UnitVec3f::H ^ norm;
+    if ((UnitVec3f::U * cross) < 0)
+        return -angle;
+    return angle;
 }
 
 #endif //ELPLANT_VECTOR_H
