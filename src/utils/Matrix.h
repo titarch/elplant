@@ -17,11 +17,27 @@ public:
 
     Matrix(grid_t const& grid) : grid_(grid) {}
 
+    Matrix t() {
+        Matrix t;
+        for (size_t i = 0; i < N; ++i)
+            for (size_t j = 0; j < N; ++j)
+                t.grid_[i][j] = grid_[j][i];
+        return t;
+    }
+
     friend Vector<T, N> operator*(Matrix const& m, Vector<T, N> const& v) {
         Vector<T, N> vp;
         for (size_t i = 0; i < N; ++i)
             vp[i] = Vector<T, N>{m.grid_[i]} * v;
         return vp;
+    }
+
+    friend Matrix operator*(Matrix const& lhs, Matrix const& rhs) {
+        Matrix p{}, t_rhs = rhs.t();
+        for (size_t i = 0; i < N; ++i)
+            for (size_t j = 0; j < N; ++j)
+                p[i][j] = Vector<T, N>{lhs.grid_[i]} * Vector<T, N>{t_rhs.grid_[j]};
+        return p;
     }
 
 private:
