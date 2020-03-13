@@ -11,6 +11,7 @@
 #include <yaml-cpp/yaml.h>
 #include "../grammar/Grammar.h"
 #include "../utils/Vector.h"
+#include "../utils/Matrix.h"
 
 using line = std::pair<sf::Vertex, sf::Vertex>;
 using lines = std::vector<line>;
@@ -36,13 +37,26 @@ struct Cylinder {
     friend std::ostream& operator<<(std::ostream& os, Cylinder const& c) {
         return os << "C[O: " << c.o << ", D: " << c.d << ", R: " << c.r << ", H:" << c.h << "]";
     }
-    friend YAML::Emitter& operator << (YAML::Emitter& out, Cylinder const& c) {
+
+    friend YAML::Emitter& operator<<(YAML::Emitter& out, Cylinder const& c) {
         return out << YAML::BeginMap
-        << YAML::Key << "type" << YAML::Value << "cylinder"
-        << YAML::Key << "base" << YAML::Value << c.o
-        << YAML::Key << "axis" << YAML::Value << c.d * c.h
-        << YAML::Key << "radius" << YAML::Value << c.r
-        << YAML::EndMap;
+                   << YAML::Key << "type" << YAML::Value << "cylinder"
+                   << YAML::Key << "base" << YAML::Value << c.o
+                   << YAML::Key << "axis" << YAML::Value << c.d * c.h
+                   << YAML::Key << "radius" << YAML::Value << c.r
+                   << YAML::EndMap;
+    }
+};
+
+struct SeaTurtle : public Cylinder {
+    Vec3f l, u;
+
+    SeaTurtle(const Vec3f& o, double r, double h) : Cylinder(o, UnitVec3f::H, r, h), l(UnitVec3f::L), u(UnitVec3f::U) {}
+
+    void rotate(const Mat3f& r) {
+        d = r * d;
+        u = r * u;
+        l = r * l;
     }
 };
 

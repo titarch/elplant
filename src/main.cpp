@@ -9,7 +9,7 @@ int main() {
     g.add_rule('B', "A&F^CFB^F^D^^-F-D^|F^B|FC^F^A//");
     g.add_rule('C', "|D^|F^B-F+C^F^A&&FA&F^C+F+B^F^D//");
     g.add_rule('D', "|CFB-F+B|FA&F^A&&FB-F+B|FC//");
-    cylinders cyls = eng.draw(g.generate(2), 90, 5, 1);
+    cylinders cyls = eng.draw(g.generate(3), 90, 5, 1);
     eng.save(cyls, "objs.yaml");
     for (const auto& c : cyls)
         std::cout << c << std::endl;

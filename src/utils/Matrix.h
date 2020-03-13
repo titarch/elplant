@@ -40,36 +40,26 @@ public:
         return p;
     }
 
+    static Matrix R(Vector<T, N> const& u, double angle) {
+        throw "Not implemented";
+    }
+
 private:
     grid_t grid_;
 };
 
 using Mat3f = Matrix<double, 3>;
 
-namespace RotMat3f {
-    Mat3f U(double a) {
-        return Mat3f(Mat3f::grid_t{
-                Mat3f::row_t{cos(a), sin(a), 0},
-                {-sin(a), cos(a), 0},
-                {0, 0, 1}
-        });
-    }
+template<>
+inline Mat3f Mat3f::R(Vec3f const& u, double angle) {
+    double c = cos(angle);
+    double s = sin(angle);
 
-    Mat3f L(double a) {
-        return Mat3f(Mat3f::grid_t{
-                Mat3f::row_t{cos(a), 0, -sin(a)},
-                {0, 1, 0},
-                {sin(a), 0, cos(a)}
-        });
-    }
-
-    Mat3f H(double a) {
-        return Mat3f(Mat3f::grid_t{
-                Mat3f::row_t{1, 0, 0},
-                {0, cos(a), -sin(a)},
-                {0, sin(a), cos(a)}
-        });
-    }
+    return Mat3f{Mat3f::grid_t{
+            Mat3f::row_t{u[0] * u[0] * (1 - c) + c, u[0] * u[1] * (1 - c) - u[2] * s, u[0] * u[2] * (1 - c) + u[1] * s},
+            {u[0] * u[1] * (1 - c) + u[2] * s, u[1] * u[1] * (1 - c) + c, u[1] * u[2] * (1 - c) - u[0] * s},
+            {u[0] * u[2] * (1 - c) - u[1] * s, u[1] * u[2] * (1 - c) + u[0] * s, u[2] * u[2] * (1 - c) + c}
+    }};
 }
 
 #endif //ELPLANT_MATRIX_H

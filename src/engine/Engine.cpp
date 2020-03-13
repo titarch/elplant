@@ -8,7 +8,6 @@
 #include <iostream>
 #include <yaml-cpp/yaml.h>
 #include "Engine.h"
-#include "../utils/Matrix.h"
 
 static Vec2f angle_dir(double t) {
     return Vec2f{{std::sin(M_PI * t / 180), -std::cos(M_PI * t / 180)}};
@@ -54,8 +53,8 @@ lines Engine::draw(const std::string& s, double angle, double length) const {
 cylinders Engine::draw(const std::string& s, double angle, double length, double thickness) const {
     angle = angle * M_PI / 180;
     cylinders cyls;
-    std::stack<Cylinder> turtles;
-    turtles.emplace(Vec3f{}, UnitVec3f::L, thickness, length);
+    std::stack<SeaTurtle> turtles;
+    turtles.emplace(Vec3f{}, thickness, length);
     for (char const& c : s) {
         auto& turtle = turtles.top();
         switch (c) {
@@ -66,31 +65,35 @@ cylinders Engine::draw(const std::string& s, double angle, double length, double
                 turtles.pop();
                 break;
             case '+':
-                turtle.d = RotMat3f::U(angle) * turtle.d;
+                turtle.rotate(Mat3f::R(turtle.u, angle));
                 break;
             case '-':
-                turtle.d = RotMat3f::U(-angle) * turtle.d;
+                turtle.rotate(Mat3f::R(turtle.u, -angle));
                 break;
             case '&':
-                turtle.d = RotMat3f::L(angle) * turtle.d;
+                turtle.rotate(Mat3f::R(turtle.l, angle));
                 break;
             case '^':
-                turtle.d = RotMat3f::L(-angle) * turtle.d;
+                turtle.rotate(Mat3f::R(turtle.l, -angle));
                 break;
             case '\\':
-                turtle.d = RotMat3f::H(angle) * turtle.d;
+                turtle.rotate(Mat3f::R(turtle.d, angle));
                 break;
             case '/':
-                turtle.d = RotMat3f::H(-angle) * turtle.d;
+                turtle.rotate(Mat3f::R(turtle.d, -angle));
                 break;
             case '|':
-                turtle.d = RotMat3f::U(M_PI) * turtle.d;
+                turtle.rotate(Mat3f::R(turtle.u, M_PI));
+                break;
+            case 'F':
+                cyls.push_back(dynamic_cast<Cylinder&>(turtle));
+                // fall through
+            case 'f':
+                turtle.o += turtle.d * length;
                 break;
             default:
                 if (!isalpha(c))
                     throw std::invalid_argument("Bad character " + std::to_string(c));
-                cyls.push_back(turtle);
-                turtle.o += turtle.d * length;
         }
     }
     return cyls;
