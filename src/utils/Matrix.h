@@ -33,25 +33,25 @@ using Mat3f = Matrix<double, 3>;
 namespace RotMat3f {
     Mat3f U(double a) {
         return Mat3f(Mat3f::grid_t{
-                Mat3f::row_t{std::cos(a), std::sin(a), 0},
-                {-std::sin(a), std::cos(a), 0},
+                Mat3f::row_t{cos(a), sin(a), 0},
+                {-sin(a), cos(a), 0},
                 {0, 0, 1}
         });
     }
 
     Mat3f L(double a) {
         return Mat3f(Mat3f::grid_t{
-                Mat3f::row_t{std::cos(a), 0, -std::sin(a)},
+                Mat3f::row_t{cos(a), 0, -sin(a)},
                 {0, 1, 0},
-                {std::sin(a), 0, std::cos(a)}
+                {sin(a), 0, cos(a)}
         });
     }
 
     Mat3f H(double a) {
         return Mat3f(Mat3f::grid_t{
                 Mat3f::row_t{1, 0, 0},
-                {0, std::cos(a), -std::sin(a)},
-                {0, std::sin(a), std::cos(a)}
+                {0, cos(a), -sin(a)},
+                {0, sin(a), cos(a)}
         });
     }
 }
