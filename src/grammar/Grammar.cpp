@@ -36,7 +36,7 @@ void Grammar::add_rule(char lvalue, const String &rvalue, unsigned weight) {
 
 String Grammar::generate(int n) const {
     String buffer;
-    generate_rec(buffer, axiom_, n, 0);
+    generate_rec(buffer, axiom_, n, -1);
 
     return buffer;
 }
