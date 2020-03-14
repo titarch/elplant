@@ -142,11 +142,16 @@ Mesh Cylinder::to_mesh(unsigned n, unsigned rings) const {
     double a, da, c, s, z;
     da = 2 * M_PI / double(n - 1);
     double dh = h / (rings - 1);
+    double angle_H = d.get_angle_H();
+    auto h_axis = (UnitVec3f::H ^ d).normalized();
     for (a = 0.0, i = 0; i < n; a += da, i++) {
         c = r * cos(a);
         s = r * sin(a);
         for (z = 0, ring = 0; ring < rings; z += dh, ring++) {
-            m.vertices.emplace_back(Vec3f{{c, s, z}} + o);
+            Vec3f vertex = Vec3f{{c, s, z}};
+            if (angle_H != 0)
+                vertex = Mat3f::R(h_axis, angle_H) * vertex;
+            m.vertices.emplace_back(vertex + o);
             m.normals.emplace_back(Vec3f{{c - o[0], s - o[1], 0}}.normalized());
             if (ring == rings - 1)
                 continue;

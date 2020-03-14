@@ -5,11 +5,15 @@
 int main() {
     Engine eng(1920, 1080);
     Grammar g("A");
-    g.add_rule('A', "B-F+CFC+F-D&F^D-F+&&CFC+F+B//");
-    g.add_rule('B', "A&F^CFB^F^D^^-F-D^|F^B|FC^F^A//");
-    g.add_rule('C', "|D^|F^B-F+C^F^A&&FA&F^C+F+B^F^D//");
-    g.add_rule('D', "|CFB-F+B|FA&F^A&&FB-F+B|FC//");
-    cylinders cyls = eng.draw(g.generate(3), 90, 5, 1);
+    g.add_rule('A', "[&FLA]/////[&FLA]///////[&FLA]");
+    g.add_rule('F', "S/////F");
+    g.add_rule('S', "FL");
+    /*
+    Grammar g("FX");
+    g.add_rule('Y', "-FX-Y");
+    g.add_rule('X',"X+YF+");
+     */
+    cylinders cyls = eng.draw(g.generate(6), 22.5, 3, 0.5);
     eng.save(cyls, "objs.yaml");
     for (const auto& c : cyls)
         std::cout << c << std::endl;
