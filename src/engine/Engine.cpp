@@ -85,6 +85,9 @@ cylinders Engine::draw(const std::string& s, double angle, double length, double
             case '|':
                 turtle.rotate(Mat3f::R(turtle.u, M_PI));
                 break;
+            case '!':
+                turtle.r *= 0.75;
+                break;
             case 'F':
                 cyls.push_back(dynamic_cast<Cylinder&>(turtle));
                 // fall through

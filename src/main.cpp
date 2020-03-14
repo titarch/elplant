@@ -5,7 +5,7 @@
 int main() {
     Engine eng(1920, 1080);
     Grammar g("A");
-    g.add_rule('A', "[&FLA]/////[&FLA]///////[&FLA]");
+    g.add_rule('A', "[&FL!A]/////[&FL!A]///////[&FL!A]");
     g.add_rule('F', "S/////F");
     g.add_rule('S', "FL");
     /*
