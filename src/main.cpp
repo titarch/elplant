@@ -8,18 +8,19 @@ int main() {
     g.add_rule('A', "[&FL!A]/////[&FL!A]///////[&FL!A]");
     g.add_rule('F', "S/////F");
     g.add_rule('S', "FL");
+    g.add_rule('L', "[^^{-f+f+f-|-f+f+f}]");
     /*
     Grammar g("FX");
     g.add_rule('Y', "-FX-Y");
     g.add_rule('X',"X+YF+");
      */
-    cylinders cyls = eng.draw(g.generate(6), 22.5, 3, 0.5);
-    eng.save(cyls, "objs.yaml");
-    for (const auto& c : cyls)
+    auto s = g.generate(5);
+    std::cout << s << std::endl;
+    Plant p = eng.draw(s, 22.5, 3, 0.5);
+    for (const auto& c : p.cyls)
         std::cout << c << std::endl;
-    Mesh m;
-    for (auto const& c: cyls)
-        m.merge_mesh(c.to_mesh(8, 8));
+    Mesh m = p.to_mesh(12, 2);
+
     m.save_obj("cylinder.obj");
     return 0;
 }

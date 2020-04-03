@@ -50,14 +50,52 @@ lines Engine::draw(const std::string& s, double angle, double length) const {
     return lines;
 }
 
-cylinders Engine::draw(const std::string& s, double angle, double length, double thickness) const {
+Leaf Engine::draw_leaf(std::string const &s, unsigned &index,
+                       SeaTurtle& turtle, double angle, double length) const {
+    std::vector<Vec3f> vertices;
+    while (s[index] != '}') {
+        switch (s[index]) {
+            case '+':
+                turtle.rotate(Mat3f::R(turtle.u, angle));
+                break;
+            case '-':
+                turtle.rotate(Mat3f::R(turtle.u, -angle));
+                break;
+            case '&':
+                turtle.rotate(Mat3f::R(turtle.l, angle));
+                break;
+            case '^':
+                turtle.rotate(Mat3f::R(turtle.l, -angle));
+                break;
+            case '\\':
+                turtle.rotate(Mat3f::R(turtle.d, angle));
+                break;
+            case '/':
+                turtle.rotate(Mat3f::R(turtle.d, -angle));
+                break;
+            case '|':
+                turtle.rotate(Mat3f::R(turtle.u, M_PI));
+                break;
+            case 'f':
+                vertices.push_back(turtle.o);
+                turtle.o += turtle.d * length;
+                break;
+        }
+        index++;
+    }
+
+    return Leaf(vertices);
+}
+
+Plant Engine::draw(const std::string& s, double angle, double length, double thickness) const {
     angle = angle * M_PI / 180;
-    cylinders cyls;
+    Plant plt;
+    Leaf l;
     std::stack<SeaTurtle> turtles;
     turtles.emplace(Vec3f{}, thickness, length);
-    for (char const& c : s) {
+    for (unsigned i = 0; i < s.size(); i++) {
         auto& turtle = turtles.top();
-        switch (c) {
+        switch (s[i]) {
             case '[':
                 turtles.push(turtle);
                 break;
@@ -88,18 +126,21 @@ cylinders Engine::draw(const std::string& s, double angle, double length, double
             case '!':
                 turtle.r *= 0.75;
                 break;
+            case '{':
+                l = draw_leaf(s, i, turtle, angle, length);
+                plt.add_leaf(l);
+                break;
             case 'F':
-                cyls.push_back(dynamic_cast<Cylinder&>(turtle));
+                plt.add_cylinder(dynamic_cast<Cylinder&>(turtle));
                 // fall through
             case 'f':
                 turtle.o += turtle.d * length;
-                break;
             default:
-                if (!isalpha(c))
-                    throw std::invalid_argument("Bad character " + std::to_string(c));
+                if (!isalpha(s[i]))
+                    throw std::invalid_argument("Bad character " + std::to_string(s[i]));
         }
     }
-    return cyls;
+    return plt;
 }
 
 void Engine::render(const Grammar& g, int n, double angle, double length) const {
@@ -137,64 +178,4 @@ void Engine::save(const cylinders& cls, const char *path) {
       << YAML::Value << YAML::BeginSeq << YAML::Flow << cls << YAML::EndSeq << YAML::EndMap << YAML::EndMap;
     std::ofstream file(path);
     file << o.c_str();
-}
-
-Mesh Cylinder::to_mesh(unsigned n, unsigned rings) const {
-    Mesh m;
-    unsigned i, ring;
-    double a, da, c, s, z;
-    da = 2 * M_PI / double(n - 1);
-    double dh = h / (rings - 1);
-    double angle_H = d.get_angle_H();
-    auto h_axis = (UnitVec3f::H ^ d).normalized();
-    // Don't count beginning and end vertices twice
-    unsigned num_vertices = n * rings - rings;
-    for (a = 0.0f, i = 0; i < n-1; a += da, i++) {
-        c = r * cos(a);
-        s = r * sin(a);
-        for (z = 0.0f, ring = 0; ring < rings; z += dh, ring++) {
-            Vec3f vertex = Vec3f{{c, s, z}};
-            if (angle_H != 0)
-                vertex = Mat3f::R(h_axis, angle_H) * vertex;
-            m.vertices.emplace_back(vertex + o);
-            m.normals.emplace_back(Vec3f{{c - o[0], s - o[1], 0}}.normalized());
-            if (ring == rings - 1)
-                continue;
-            unsigned e0, e1, e2, e3;
-            e0 = i * rings + ring;
-            e1 = ((i + 1) % n * rings + ring) % num_vertices;
-            e2 = i * rings + ring + 1;
-            e3 = ((i + 1) % n * rings + ring + 1) % num_vertices;
-            m.faces.emplace_back(std::array<unsigned, 4>{e0, e1, e3, e2});
-        }
-    }
-    return m;
-}
-
-void Mesh::save_obj(const std::string& path) const {
-    std::ofstream out(path);
-    for (auto const& v: vertices)
-        out << "v " << v[0] << " " << v[1] << " " << v[2] << "\n";
-    out << "\n";
-
-    for (auto const& n: normals)
-        out << "vn " << n[0] << " " << n[1] << " " << n[2] << "\n";
-    out << "\n";
-
-    for (auto const& f: faces) {
-        out << "f ";
-        for (auto const& v: f)
-            out << v + 1 << " ";
-        out << "\n";
-    }
-
-}
-
-void Mesh::merge_mesh(const Mesh& m) {
-    unsigned faces_size = vertices.size();
-    vertices.insert(vertices.end(), m.vertices.begin(), m.vertices.end());
-    normals.insert(normals.end(), m.normals.begin(), m.normals.end());
-    for (auto face : m.faces)
-        faces.emplace_back(std::array<unsigned, 4>{face[0] + faces_size, face[1] + faces_size, face[2] + faces_size, face[3] + faces_size});
-
 }
