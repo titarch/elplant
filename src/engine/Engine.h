@@ -19,7 +19,7 @@ using lines = std::vector<line>;
 struct Mesh {
     std::vector<Vec3f> vertices;
     std::vector<Vec3f> normals;
-    std::vector<std::array<unsigned, 3>> faces;
+    std::vector<std::array<unsigned, 4>> faces;
 
     void save_obj(const std::string& path) const;
     void merge_mesh(const Mesh& m);

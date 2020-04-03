@@ -147,10 +147,12 @@ Mesh Cylinder::to_mesh(unsigned n, unsigned rings) const {
     double dh = h / (rings - 1);
     double angle_H = d.get_angle_H();
     auto h_axis = (UnitVec3f::H ^ d).normalized();
-    for (a = 0.0, i = 0; i < n; a += da, i++) {
+    // Don't count beginning and end vertices twice
+    unsigned num_vertices = n * rings - rings;
+    for (a = 0.0f, i = 0; i < n-1; a += da, i++) {
         c = r * cos(a);
         s = r * sin(a);
-        for (z = 0, ring = 0; ring < rings; z += dh, ring++) {
+        for (z = 0.0f, ring = 0; ring < rings; z += dh, ring++) {
             Vec3f vertex = Vec3f{{c, s, z}};
             if (angle_H != 0)
                 vertex = Mat3f::R(h_axis, angle_H) * vertex;
@@ -160,11 +162,10 @@ Mesh Cylinder::to_mesh(unsigned n, unsigned rings) const {
                 continue;
             unsigned e0, e1, e2, e3;
             e0 = i * rings + ring;
-            e1 = ((i + 1)) % n * rings + ring;
+            e1 = ((i + 1) % n * rings + ring) % num_vertices;
             e2 = i * rings + ring + 1;
-            e3 = ((i + 1)) % n * rings + ring + 1;
-            m.faces.emplace_back(std::array<unsigned, 3>{e0, e1, e3});
-            m.faces.emplace_back(std::array<unsigned, 3>{e0, e3, e2});
+            e3 = ((i + 1) % n * rings + ring + 1) % num_vertices;
+            m.faces.emplace_back(std::array<unsigned, 4>{e0, e1, e3, e2});
         }
     }
     return m;
@@ -180,8 +181,12 @@ void Mesh::save_obj(const std::string& path) const {
         out << "vn " << n[0] << " " << n[1] << " " << n[2] << "\n";
     out << "\n";
 
-    for (auto const& f: faces)
-        out << "f " << f[0] + 1 << " " << f[1] + 1 << " " << f[2] + 1 << " " << "\n";
+    for (auto const& f: faces) {
+        out << "f ";
+        for (auto const& v: f)
+            out << v + 1 << " ";
+        out << "\n";
+    }
 
 }
 
@@ -190,6 +195,6 @@ void Mesh::merge_mesh(const Mesh& m) {
     vertices.insert(vertices.end(), m.vertices.begin(), m.vertices.end());
     normals.insert(normals.end(), m.normals.begin(), m.normals.end());
     for (auto face : m.faces)
-        faces.emplace_back(std::array<unsigned, 3>{face[0] + faces_size, face[1] + faces_size, face[2] + faces_size});
+        faces.emplace_back(std::array<unsigned, 4>{face[0] + faces_size, face[1] + faces_size, face[2] + faces_size, face[3] + faces_size});
 
 }
