@@ -38,6 +38,9 @@ lines Engine::draw(const std::string& s, double angle, double length) const {
                 turtle.d -= angle;
                 while (turtle.d < -360) turtle.d += 360;
                 break;
+            case 'f':
+                turtle.o += angle_dir(turtle.d) * length;
+                break;
             default:
                 if (!isalpha(c))
                     throw std::invalid_argument("Bad character " + std::to_string(c));
@@ -50,7 +53,7 @@ lines Engine::draw(const std::string& s, double angle, double length) const {
     return lines;
 }
 
-Leaf Engine::draw_leaf(std::string const &s, unsigned &index,
+Leaf Engine::draw_leaf(std::string const& s, unsigned& index,
                        SeaTurtle& turtle, double angle, double length) const {
     std::vector<Vec3f> vertices;
     while (s[index] != '}') {
@@ -146,6 +149,7 @@ Plant Engine::draw(const std::string& s, double angle, double length, double thi
 
 void Engine::render(const Grammar& g, int n, double angle, double length) const {
     auto lines = draw(g.generate(n), angle, length);
+    normalize(lines, (float) width_, (float) height_, 0.9);
     sf::RenderWindow window(sf::VideoMode(width_, height_), "sfml-elplant");
 
     while (window.isOpen()) {
@@ -156,7 +160,17 @@ void Engine::render(const Grammar& g, int n, double angle, double length) const 
                     window.close();
                     break;
                 case (sf::Event::KeyPressed):
-                    lines = draw(g.generate(n), angle, length);
+                    switch (event.key.code) {
+                        case sf::Keyboard::Space:
+                            lines = draw(g.generate(++n), angle, length);
+                            break;
+                        case sf::Keyboard::BackSpace:
+                            lines = draw(g.generate(--n), angle, length);
+                            break;
+                        default:
+                            break;
+                    }
+                    normalize(lines, (float) width_, (float) height_, 0.9);
                     break;
                 default:
                     break;
@@ -164,16 +178,14 @@ void Engine::render(const Grammar& g, int n, double angle, double length) const 
         }
         window.clear();
 
-        for (auto const& line : lines) {
-            sf::Vertex vline[2] = {line.first, line.second};
-            window.draw(vline, 2, sf::Lines);
-        }
+        for (auto const& line : lines)
+            window.draw(line.data(), 2, sf::Lines);
 
         window.display();
     }
 }
 
-void Engine::save(const cylinders& cls, const char *path) {
+void Engine::save(const cylinders& cls, const char* path) {
     YAML::Emitter o;
     o << YAML::BeginMap << YAML::Key << "objects" << YAML::Value << YAML::BeginMap << YAML::Key << "solids"
       << YAML::Value << YAML::BeginSeq << YAML::Flow << cls << YAML::EndSeq << YAML::EndMap << YAML::EndMap;

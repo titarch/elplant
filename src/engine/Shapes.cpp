@@ -5,6 +5,35 @@
 #include <fstream>
 #include "Shapes.hh"
 
+void normalize(lines& ls, float width, float height, float stickiness) {
+    float xmin = INFINITY, xmax = 0, ymin = INFINITY, ymax = 0;
+    for (const auto& l : ls) {
+        for (const auto& v : l) {
+            const auto& pos = v.position;
+            if (pos.x < xmin)
+                xmin = pos.x;
+            if (pos.x > xmax)
+                xmax = pos.x;
+            if (pos.y < ymin)
+                ymin = pos.y;
+            if (pos.y > ymax)
+                ymax = pos.y;
+        }
+    }
+
+    float kx = width / (xmax - xmin);
+    float ky = height / (ymax - ymin);
+    float k = kx < ky ? kx : ky;
+    k *= 2 * stickiness - 1;
+    for (auto& l : ls) {
+        for (auto& v : l) {
+            auto& p = v.position;
+            p.x = (p.x - xmin) * k + (1 - stickiness) * width;
+            p.y = (p.y - ymin) * k + (1 - stickiness) * height;
+        }
+    }
+}
+
 Mesh Cylinder::to_mesh(unsigned n, unsigned rings) const {
     Mesh m;
     unsigned i, ring;
@@ -15,7 +44,7 @@ Mesh Cylinder::to_mesh(unsigned n, unsigned rings) const {
     auto h_axis = (UnitVec3f::H ^ d).normalized();
     // Don't count beginning and end vertices twice
     unsigned num_vertices = n * rings - rings;
-    for (a = 0.0f, i = 0; i < n-1; a += da, i++) {
+    for (a = 0.0f, i = 0; i < n - 1; a += da, i++) {
         c = r * cos(a);
         s = r * sin(a);
         for (z = 0.0f, ring = 0; ring < rings; z += dh, ring++) {

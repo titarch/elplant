@@ -10,8 +10,11 @@
 #include "../utils/Vector.h"
 #include "../utils/Matrix.h"
 
-using line = std::pair<sf::Vertex, sf::Vertex>;
+//using line = std::pair<sf::Vertex, sf::Vertex>;
+using line = std::array<sf::Vertex, 2>;
 using lines = std::vector<line>;
+
+void normalize(lines& ls, float width, float height, float stickiness);
 
 struct Mesh {
     std::vector<Vec3f> vertices;
@@ -49,7 +52,8 @@ struct Leaf {
     std::vector<Vec3f> vertices;
 
     Leaf() {}
-    Leaf(std::vector<Vec3f> vertices): vertices(std::move(vertices)) {}
+
+    Leaf(std::vector<Vec3f> vertices) : vertices(std::move(vertices)) {}
 
     Mesh to_mesh() const;
 };
