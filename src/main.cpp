@@ -19,8 +19,6 @@ int main() {
     Plant p = eng.draw(s, 22.5, 3, 0.5);
     for (const auto& c : p.cyls)
         std::cout << c << std::endl;
-    Mesh m = p.to_mesh(12, 2);
-
-    m.save_obj("cylinder.obj");
+    p.save_plant("plant.obj");
     return 0;
 }

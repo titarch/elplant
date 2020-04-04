@@ -20,3 +20,19 @@ Mesh Plant::to_mesh(unsigned cylinder_faces, unsigned cylinder_rings) const {
         m.merge_mesh(l.to_mesh());
     return m;
 }
+
+void Plant::save_plant(std::string const &path) const {
+    std::ofstream out(path);
+    out << "o Cylinders" << std::endl;
+    Mesh cylinder_mesh;
+    for (auto const& c: cyls)
+        cylinder_mesh.merge_mesh(c.to_mesh(10, 2));
+    unsigned curr_vertices = cylinder_mesh.save_obj(out, 0);
+
+    out << "o Leaves" << std::endl;
+    Mesh leaves_mesh;
+    for (auto const& l: lvs) {
+        leaves_mesh.merge_mesh(l.to_mesh());
+    }
+    leaves_mesh.save_obj(out, curr_vertices);
+}
