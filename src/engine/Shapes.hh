@@ -17,7 +17,7 @@ struct Mesh {
     std::vector<Vec3f> vertices;
     std::vector<Vec3f> normals;
     std::vector<std::vector<unsigned>> faces;
-    unsigned save_obj(std::ofstream& out, unsigned curr_vertices) const;
+    void save_obj(std::ofstream& out, unsigned curr_vertices) const;
 
     void merge_mesh(const Mesh& m);
 };

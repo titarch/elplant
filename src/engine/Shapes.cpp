@@ -50,7 +50,7 @@ void Mesh::merge_mesh(const Mesh& m) {
 
 }
 
-unsigned Mesh::save_obj(std::ofstream& out, unsigned curr_vertices) const {
+void Mesh::save_obj(std::ofstream& out, unsigned curr_vertices) const {
     for (auto const& v: vertices)
         out << "v " << v[0] << " " << v[1] << " " << v[2] << "\n";
     for (auto const& n: normals)
@@ -62,7 +62,6 @@ unsigned Mesh::save_obj(std::ofstream& out, unsigned curr_vertices) const {
             out << v + curr_vertices + 1 << " ";
         out << "\n";
     }
-    return curr_vertices + vertices.size();
 }
 
 Mesh Leaf::to_mesh() const {
