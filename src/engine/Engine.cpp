@@ -132,9 +132,10 @@ Plant Engine::draw(const std::string& s, double angle, double length, double thi
                 break;
             case 'F':
                 plt.add_cylinder(dynamic_cast<Cylinder&>(turtle));
-                // fall through
+                [[fallthrough]];
             case 'f':
                 turtle.o += turtle.d * length;
+                break;
             default:
                 if (!isalpha(s[i]))
                     throw std::invalid_argument("Bad character " + std::to_string(s[i]));
