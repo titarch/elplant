@@ -21,18 +21,32 @@ Mesh Plant::to_mesh(unsigned cylinder_faces, unsigned cylinder_rings) const {
     return m;
 }
 
-void Plant::save_plant(std::string const &path) const {
-    std::ofstream out(path);
-    out << "o Cylinders" << std::endl;
-    Mesh cylinder_mesh;
-    for (auto const& c: cyls)
-        cylinder_mesh.merge_mesh(c.to_mesh(10, 2));
-    cylinder_mesh.save_obj(out, 0);
+void Plant::save_plant(std::string const& obj_path, std::string const& mtl_path, std::vector<Material> const& materials) const {
+    std::ofstream obj_out(obj_path);
+    size_t num_vertices = 0, num_cyls = 0, num_leaves = 0;
+    Mesh m;
 
-    out << "o Leaves" << std::endl;
-    Mesh leaves_mesh;
-    for (auto const& l: lvs) {
-        leaves_mesh.merge_mesh(l.to_mesh());
+    obj_out << "mtllib " << mtl_path << std::endl;
+    for (auto const& c: cyls) {
+        obj_out << "o Cylinder" << num_cyls << std::endl;
+        obj_out << "usemtl " << materials[c.color_index].name << std::endl;
+        m = c.to_mesh(10, 2);
+        m.save_obj(obj_out, num_vertices);
+        num_vertices += m.vertices.size();
+        num_cyls++;
     }
-    leaves_mesh.save_obj(out, cylinder_mesh.vertices.size());
+
+    for (auto const& l: lvs) {
+        obj_out << "o Leaf" << num_leaves << std::endl;
+        obj_out << "usemtl " << materials[l.color_index].name << std::endl;
+        m = l.to_mesh();
+        m.save_obj(obj_out, num_vertices);
+        num_vertices += m.vertices.size();
+        num_leaves++;
+    }
+
+    std::ofstream mtl_out(mtl_path);
+    for (auto const& mtl: materials)
+        mtl_out << mtl;
+
 }

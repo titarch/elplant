@@ -12,6 +12,7 @@
 #include "../grammar/Grammar.h"
 #include "../utils/Vector.h"
 #include "../utils/Matrix.h"
+#include "Material.h"
 #include "Shapes.hh"
 #include "Plant.hh"
 
@@ -19,7 +20,7 @@
 struct SeaTurtle : public Cylinder {
     Vec3f l, u;
 
-    SeaTurtle(const Vec3f& o, double r, double h) : Cylinder(o, UnitVec3f::H, r, h), l(UnitVec3f::L), u(UnitVec3f::U) {}
+    SeaTurtle(const Vec3f& o, double r, double h, unsigned color_index) : Cylinder(o, UnitVec3f::H, r, h, color_index), l(UnitVec3f::L), u(UnitVec3f::U) {}
 
     void rotate(const Mat3f& r) {
         d = r * d;

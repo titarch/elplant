@@ -4,6 +4,6 @@ set(engine_src_files
         Plant.cpp
         Plant.hh
         Shapes.cpp
-        Shapes.hh)
+        Shapes.hh Material.cpp Material.h)
 add_library(engine ${engine_src_files})
 target_link_libraries(engine PUBLIC sfml-window sfml-graphics)

@@ -9,6 +9,7 @@
 #include <utility>
 #include "../utils/Vector.h"
 #include "../utils/Matrix.h"
+#include "Material.h"
 
 using line = std::pair<sf::Vertex, sf::Vertex>;
 using lines = std::vector<line>;
@@ -26,8 +27,9 @@ struct Cylinder {
     Vec3f o;
     Vec3f d;
     double r, h;
+    unsigned color_index;
 
-    Cylinder(const Vec3f& o, const Vec3f& d, double r, double h) : o(o), d(d), r(r), h(h) {}
+    Cylinder(const Vec3f& o, const Vec3f& d, double r, double h, unsigned color_index) : o(o), d(d), r(r), h(h), color_index(color_index) {}
 
     Mesh to_mesh(unsigned n, unsigned rings) const;
 
@@ -47,9 +49,10 @@ struct Cylinder {
 
 struct Leaf {
     std::vector<Vec3f> vertices;
+    unsigned color_index;
 
     Leaf() {}
-    Leaf(std::vector<Vec3f> vertices): vertices(std::move(vertices)) {}
+    Leaf(std::vector<Vec3f> vertices, unsigned color_index): vertices(std::move(vertices)), color_index(color_index) {}
 
     Mesh to_mesh() const;
 };
