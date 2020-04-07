@@ -22,3 +22,24 @@ grammars:
         rgb: [1.0, 0.0, 1.0]
       - name: yellow
         rgb: [1.0, 1.0, 0.0]
+
+  - name: "hilbert"
+    axiom: "A"
+    rules:
+      A: "B-F+CFC+F-D&F^D-F+&&CFC+F+B//`"
+      B: "A&F^CFB^F^D^^-F-D^|F^B|FC^F^A//`"
+      C: "|D^|F^B-F+C^F^A&&FA&F^C+F+B^F^D//`"
+      D: "|CFB-F+B|FA&F^A&&FB-F+B|FC//`"
+    angle: 90
+    length: 5
+    thickness: 1
+    n: 3
+    colors:
+      - name: red
+        rgb: [1.0, 0.0, 0.0]
+      - name: green
+        rgb: [0.0, 1.0, 0.0]
+      - name: blue
+        rgb: [0.0, 0.0, 1.0]
+      - name: yellow
+        rgb: [1.0, 1.0, 0.0]
