@@ -46,9 +46,12 @@ struct GrammarData {
     Grammar g;
     double angle;
     int n;
+    double length, thickness;
+    materials mtls;
 
-    GrammarData(std::string name, Grammar g, double angle, int n) : name(std::move(name)), g(std::move(g)),
-                                                                    angle(angle), n(n) {}
+    GrammarData(const std::string& name, const Grammar& g, double angle, int n, double length, double thickness,
+                const materials& mtls) : name(name), g(g), angle(angle), n(n), length(length), thickness(thickness),
+                                         mtls(mtls) {}
 };
 
 class Engine {
@@ -56,11 +59,13 @@ public:
     Engine(unsigned width, unsigned height) : width_(width), height_(height) {}
 
     [[nodiscard]] lines draw(std::string const& s, double angle, double length) const;
-    [[nodiscard]] Leaf draw_leaf(std::string const& s, unsigned &index, SeaTurtle& turtle, double angle, double length) const;
+    [[nodiscard]] Leaf
+    draw_leaf(std::string const& s, unsigned& index, SeaTurtle& turtle, double angle, double length) const;
     [[nodiscard]] Plant draw(std::string const& s, double angle, double length, double thickness) const;
     [[nodiscard]] std::vector<GrammarData> load_grammars(std::string const& path) const;
     void render(std::string const& path) const;
-    void save(Plant const& plant, materials const& mtls, const char* path);
+    void render3D(std::string const& path) const;
+    void save(Plant const& plant, materials const& mtls, std::string const& path) const;
 protected:
     unsigned width_, height_;
 };

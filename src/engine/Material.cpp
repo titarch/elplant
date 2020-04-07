@@ -10,15 +10,15 @@ const Material Material::Green = Material("green", {{0.0, 1.0, 0.0}}, {{0.5, 0.5
 const Material Material::Blue = Material("blue", {{0.0, 0.0, 1.0}}, {{0.5, 0.5, 0.5}});
 const Material Material::Yellow = Material("yellow", {{1.0, 1.0, 0.0}}, {{0.5, 0.5, 0.5}});
 
-std::ostream &operator<<(std::ostream &out, Material const& m) {
+std::ostream& operator<<(std::ostream& out, Material const& m) {
     out.precision(6);
     out << "newmtl " << std::fixed << m.name << "\n";
-    out << "Ns "  << m.Ns << "\n";
-    out << "Ka "  << m.Ka[0] << " " << m.Ka[1] << " " << m.Ka[2] << "\n";
-    out << "Kd "  << m.Kd[0] << " " << m.Kd[1] << " " << m.Kd[2] << "\n";
-    out << "Ks "  << m.Ks[0] << " " << m.Ks[1] << " " << m.Ks[2] << "\n";
-    out << "Ke "  << m.Ke[0] << " " << m.Ke[1] << " " << m.Ke[2] << "\n";
-    out << "Ni "  << m.Ni << "\n";
+    out << "Ns " << m.Ns << "\n";
+    out << "Ka " << m.Ka[0] << " " << m.Ka[1] << " " << m.Ka[2] << "\n";
+    out << "Kd " << m.Kd[0] << " " << m.Kd[1] << " " << m.Kd[2] << "\n";
+    out << "Ks " << m.Ks[0] << " " << m.Ks[1] << " " << m.Ks[2] << "\n";
+    out << "Ke " << m.Ke[0] << " " << m.Ke[1] << " " << m.Ke[2] << "\n";
+    out << "Ni " << m.Ni << "\n";
     out << "d " << m.d << "\n";
     out << "illum 2" << "\n";
 
@@ -52,4 +52,8 @@ YAML::Emitter& operator<<(YAML::Emitter& out, const Material& mat) {
                << YAML::Key << "ks" << YAML::Value << 0.5
                << YAML::Key << "ns" << YAML::Value << 5
                << YAML::EndMap;
+}
+
+Material Material::from_rgb(std::string const& color_name, const Vec3f& rgb) {
+    return Material(color_name, {{rgb[0], rgb[1], rgb[2]}}, {{0.5, 0.5, 0.5}});
 }

@@ -28,6 +28,8 @@ struct Material {
     Material(Material const& m) = default;
     Material& operator=(const Material& m);
 
+    static Material from_rgb(std::string const& color_name, Vec3f const& rgb);
+
     std::string get_name() const;
     friend std::ostream& operator<<(std::ostream& out, Material const& m);
     friend YAML::Emitter& operator<<(YAML::Emitter& out, Material const& mat);

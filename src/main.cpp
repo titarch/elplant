@@ -10,25 +10,10 @@ int main(int argc, char *argv[]) {
     Engine eng(1920, 1080);
 
     if (render_mode == "2D")
-        eng.render("../grammars.yaml");
+        eng.render("../grammars/2D.yaml");
     else if (render_mode != "3D")
         throw std::invalid_argument("Unrecognized render mode");
 
-    Grammar g("P");
-    g.add_rule('P', "I+[P+O]--//[--L]I[++L]-[PO]++PO");
-    g.add_rule('I', "FS[//&&L][//^^L]FS");
-    g.add_rule('S', "SFS");
-    g.add_rule('L', "[`{+f-ff-f+|+f-ff-f}]");
-    g.add_rule('O', "[&&&E`/W////W////W////W////W]");
-    g.add_rule('E', "FF");
-    g.add_rule('W', "[`^F][{&&&&--f++f|--f++f}]");
-    auto s = g.generate(3);
-    std::cout << s << std::endl;
-    materials mtls = {Material::Green, Material::White, Material::Yellow};
-    Plant p = eng.draw(s, 18, 3, 0.5);
-    for (const auto& c : p.cyls)
-        std::cout << c << std::endl;
-    p.save_plant("plant.obj", "plant.mtl", mtls);
-    eng.save(p, mtls, "objs.yaml");
+    eng.render3D("../grammars/3D.yaml");
 
 }

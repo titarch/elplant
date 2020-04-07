@@ -187,4 +187,21 @@ template<> inline double Vec3f::get_angle_H() const {
     return angle;
 }
 
+
+namespace YAML {
+    template<>
+    struct convert<Vec3f> {
+        static bool decode(const Node& node, Vec3f& rhs) {
+            if (!node.IsSequence() || node.size() != 3) {
+                return false;
+            }
+
+            rhs[0] = node[0].as<double>();
+            rhs[1] = node[1].as<double>();
+            rhs[2] = node[2].as<double>();
+            return true;
+        }
+    };
+}
+
 #endif //ELPLANT_VECTOR_H

@@ -168,7 +168,14 @@ std::vector<GrammarData> Engine::load_grammars(const std::string& path) const {
         }
         auto angle = g["angle"].as<double>();
         auto n = g["n"].as<int>();
-        gds.emplace_back(name, gram, angle, n);
+        double length = g["length"] ? g["length"].as<double>() : 1;
+        double thickness = g["thickness"] ? g["thickness"].as<double>() : 1;
+        materials mtls{};
+        if (g["colors"]) {
+            for (const auto& c : g["colors"])
+                mtls.push_back(Material::from_rgb(c["name"].as<std::string>(), c["rgb"].as<Vec3f>()));
+        }
+        gds.emplace_back(name, gram, angle, n, length, thickness, mtls);
     }
     return gds;
 }
@@ -230,7 +237,19 @@ void Engine::render(std::string const& path) const {
     }
 }
 
-void Engine::save(const Plant& plant, materials const& mtls, const char* path) {
+void Engine::render3D(const std::string& path) const {
+    auto gds = load_grammars(path);
+    for (const auto& gd : gds) {
+        std::cout << "Rendering " << gd.name << std::endl;
+        Plant p = draw(gd.g.generate(gd.n), gd.angle, gd.length, gd.thickness);
+        std::string output = "../output/";
+        output += gd.name + ".";
+        p.save_plant(output + "obj", output + "mtl", gd.mtls);
+        save(p, gd.mtls, output + "yaml");
+    }
+}
+
+void Engine::save(const Plant& plant, materials const& mtls, std::string const& path) const {
     YAML::Emitter o;
     o << YAML::BeginMap << YAML::Key << "textures" << YAML::Value << YAML::BeginSeq;
     for (const auto& m : mtls) o << m;
@@ -240,6 +259,8 @@ void Engine::save(const Plant& plant, materials const& mtls, const char* path) {
     for (const auto& l : plant.lvs) o << l;
     o << YAML::EndSeq << YAML::EndMap << YAML::EndMap;
     std::ofstream file(path);
+    if (!file)
+        throw std::runtime_error(path + ": could not open file");
     file << o.c_str();
 }
 
