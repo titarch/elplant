@@ -79,6 +79,9 @@ Leaf Engine::draw_leaf(std::string const& s, unsigned& index,
             case '|':
                 turtle.rotate(Mat3f::R(turtle.u, M_PI));
                 break;
+            case '`':
+                turtle.color_index++;
+                break;
             case 'f':
                 vertices.push_back(turtle.o);
                 turtle.o += turtle.d * length;
@@ -87,7 +90,7 @@ Leaf Engine::draw_leaf(std::string const& s, unsigned& index,
         index++;
     }
 
-    return Leaf(vertices);
+    return Leaf(vertices, turtle.color_index);
 }
 
 Plant Engine::draw(const std::string& s, double angle, double length, double thickness) const {
@@ -95,7 +98,7 @@ Plant Engine::draw(const std::string& s, double angle, double length, double thi
     Plant plt;
     Leaf l;
     std::stack<SeaTurtle> turtles;
-    turtles.emplace(Vec3f{}, thickness, length);
+    turtles.emplace(Vec3f{}, thickness, length, 0);
     for (unsigned i = 0; i < s.size(); i++) {
         auto& turtle = turtles.top();
         switch (s[i]) {
@@ -125,6 +128,9 @@ Plant Engine::draw(const std::string& s, double angle, double length, double thi
                 break;
             case '|':
                 turtle.rotate(Mat3f::R(turtle.u, M_PI));
+                break;
+            case '`':
+                turtle.color_index++;
                 break;
             case '!':
                 turtle.r *= 0.75;

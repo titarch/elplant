@@ -6,6 +6,7 @@
 #define ELPLANT_PLANT_HH
 
 #include "Shapes.hh"
+#include <fstream>
 
 struct Plant {
     cylinders cyls;
@@ -17,6 +18,7 @@ struct Plant {
     void add_leaf(Leaf &l);
 
     Mesh to_mesh(unsigned cylinder_faces, unsigned cylinder_rings) const;
+    void save_plant(std::string const& obj_path, std::string const& mtl_path, std::vector<Material> const& materials) const;
 
 };
 

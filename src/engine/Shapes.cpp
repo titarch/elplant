@@ -66,25 +66,6 @@ Mesh Cylinder::to_mesh(unsigned n, unsigned rings) const {
     return m;
 }
 
-void Mesh::save_obj(const std::string& path) const {
-    std::ofstream out(path);
-    for (auto const& v: vertices)
-        out << "v " << v[0] << " " << v[1] << " " << v[2] << "\n";
-    out << "\n";
-
-    for (auto const& n: normals)
-        out << "vn " << n[0] << " " << n[1] << " " << n[2] << "\n";
-    out << "\n";
-
-    for (auto const& f: faces) {
-        out << "f ";
-        for (auto const& v: f)
-            out << v + 1 << " ";
-        out << "\n";
-    }
-
-}
-
 void Mesh::merge_mesh(const Mesh& m) {
     unsigned faces_size = vertices.size();
     vertices.insert(vertices.end(), m.vertices.begin(), m.vertices.end());
@@ -96,6 +77,20 @@ void Mesh::merge_mesh(const Mesh& m) {
         faces.emplace_back(new_face);
     }
 
+}
+
+void Mesh::save_obj(std::ofstream& out, unsigned curr_vertices) const {
+    for (auto const& v: vertices)
+        out << "v " << v[0] << " " << v[1] << " " << v[2] << "\n";
+    for (auto const& n: normals)
+        out << "vn " << n[0] << " " << n[1] << " " << n[2] << "\n";
+    out << "s off" << "\n";
+    for (auto const& f: faces) {
+        out << "f ";
+        for (auto const& v: f)
+            out << v + curr_vertices + 1 << " ";
+        out << "\n";
+    }
 }
 
 Mesh Leaf::to_mesh() const {

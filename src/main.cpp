@@ -4,23 +4,20 @@
 
 int main() {
     Engine eng(1920, 1080);
-    Grammar g("A");
-    g.add_rule('A', "[&FL!A]/////[&FL!A]///////[&FL!A]");
-    g.add_rule('F', "S/////F");
-    g.add_rule('S', "FL");
-    g.add_rule('L', "[^^{-f+f+f-|-f+f+f}]");
-    /*
-    Grammar g("FX");
-    g.add_rule('Y', "-FX-Y");
-    g.add_rule('X',"X+YF+");
-     */
+    Grammar g("P");
+    g.add_rule('P', "I+[P+O]--//[--L]I[++L]-[PO]++PO");
+    g.add_rule('I', "FS[//&&L][//^^L]FS");
+    g.add_rule('S', "SFS");
+    g.add_rule('L', "[`{+f-ff-f+|+f-ff-f}]");
+    g.add_rule('O', "[&&&E`/W////W////W////W////W]");
+    g.add_rule('E', "FF");
+    g.add_rule('W', "[`^F][{&&&&--f++f|--f++f}]");
     auto s = g.generate(5);
     std::cout << s << std::endl;
-    Plant p = eng.draw(s, 22.5, 3, 0.5);
+    materials mtls = {DefaultMtl::Green, DefaultMtl::White, DefaultMtl::Yellow};
+    Plant p = eng.draw(s, 18, 3, 0.5);
     for (const auto& c : p.cyls)
         std::cout << c << std::endl;
-    Mesh m = p.to_mesh(12, 2);
-
-    m.save_obj("cylinder.obj");
+    p.save_plant("plant.obj", "plant.mtl", mtls);
     return 0;
 }
