@@ -4,6 +4,12 @@
 
 #include "Material.h"
 
+const Material Material::White = Material("white", {{1.0, 1.0, 1.0}}, {{0.5, 0.5, 0.5}});
+const Material Material::Red = Material("red", {{1.0, 0.0, 0.0}}, {{0.5, 0.5, 0.5}});
+const Material Material::Green = Material("green", {{0.0, 1.0, 0.0}}, {{0.5, 0.5, 0.5}});
+const Material Material::Blue = Material("blue", {{0.0, 0.0, 1.0}}, {{0.5, 0.5, 0.5}});
+const Material Material::Yellow = Material("yellow", {{1.0, 1.0, 0.0}}, {{0.5, 0.5, 0.5}});
+
 std::ostream &operator<<(std::ostream &out, Material const& m) {
     out.precision(6);
     out << "newmtl " << std::fixed << m.name << "\n";

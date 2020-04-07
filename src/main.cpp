@@ -24,7 +24,7 @@ int main(int argc, char *argv[]) {
     g.add_rule('W', "[`^F][{&&&&--f++f|--f++f}]");
     auto s = g.generate(3);
     std::cout << s << std::endl;
-    materials mtls = {DefaultMtl::Green, DefaultMtl::White, DefaultMtl::Yellow};
+    materials mtls = {Material::Green, Material::White, Material::Yellow};
     Plant p = eng.draw(s, 18, 3, 0.5);
     for (const auto& c : p.cyls)
         std::cout << c << std::endl;
