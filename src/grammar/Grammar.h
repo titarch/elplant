@@ -7,6 +7,7 @@
 
 #include <iostream>
 #include <string>
+#include <utility>
 #include <vector>
 #include <map>
 #include <utility>
@@ -42,14 +43,14 @@ private:
 
 class Grammar {
 public:
-    explicit Grammar(String&& axiom) : axiom_(axiom) {}
+    explicit Grammar(String axiom) : axiom_(std::move(axiom)) {}
 
     void add_rule(char lvalue, const String& rvalue, unsigned weight = 1);
     [[nodiscard]] String generate(int n) const;
 private:
     void generate_rec(String& buffer, const String& cur_rule, int max_rec, int cur_rec) const;
 
-    const String axiom_;
+    String axiom_;
     std::map<char, Rule> rules_;
 };
 

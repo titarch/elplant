@@ -6,4 +6,4 @@ set(engine_src_files
         Shapes.cpp
         Shapes.hh Material.cpp Material.h)
 add_library(engine ${engine_src_files})
-target_link_libraries(engine PUBLIC sfml-window sfml-graphics)
+target_link_libraries(engine PUBLIC sfml-window sfml-graphics grammar)

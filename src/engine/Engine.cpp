@@ -153,8 +153,34 @@ Plant Engine::draw(const std::string& s, double angle, double length, double thi
     return plt;
 }
 
-void Engine::render(const Grammar& g, int n, double angle, double length) const {
-    auto lines = draw(g.generate(n), angle, length);
+std::vector<GrammarData> Engine::load_grammars(const std::string& path) const {
+    std::vector<GrammarData> gds;
+    YAML::Node node = YAML::LoadFile(path);
+    for (const auto& g : node["grammars"]) {
+        auto name = g["name"].as<std::string>();
+        auto axiom = g["axiom"].as<std::string>();
+        Grammar gram(axiom);
+        const auto& rules = g["rules"];
+        for (YAML::const_iterator it = rules.begin(); it != rules.end(); ++it) {
+            auto lhs = it->first.as<char>();
+            auto rhs = it->second.as<std::string>();
+            gram.add_rule(lhs, rhs);
+        }
+        auto angle = g["angle"].as<double>();
+        auto n = g["n"].as<int>();
+        gds.emplace_back(name, gram, angle, n);
+    }
+    return gds;
+}
+
+void Engine::render(std::string const& path) const {
+    auto grammars = load_grammars(path);
+    if (grammars.empty())
+        throw std::invalid_argument("No grammar found in Yaml file");
+    auto gidx = 0u;
+    auto& gd = grammars[gidx];
+
+    auto lines = draw(gd.g.generate(gd.n), gd.angle, 1);
     normalize(lines, (float) width_, (float) height_, 0.9);
     sf::RenderWindow window(sf::VideoMode(width_, height_), "sfml-elplant");
 
@@ -168,14 +194,20 @@ void Engine::render(const Grammar& g, int n, double angle, double length) const 
                 case (sf::Event::KeyPressed):
                     switch (event.key.code) {
                         case sf::Keyboard::Space:
-                            lines = draw(g.generate(++n), angle, length);
+                            ++gd.n;
                             break;
                         case sf::Keyboard::BackSpace:
-                            lines = draw(g.generate(--n), angle, length);
+                            --gd.n;
+                            break;
+                        case sf::Keyboard::N:
+                            gidx = (gidx + 1) % grammars.size();
+                            gd = grammars.at(gidx);
+                            std::cout << gd.name << std::endl;
                             break;
                         default:
                             break;
                     }
+                    lines = draw(gd.g.generate(gd.n), gd.angle, 1);
                     normalize(lines, (float) width_, (float) height_, 0.9);
                     break;
                 default:
@@ -198,3 +230,4 @@ void Engine::save(const cylinders& cls, const char* path) {
     std::ofstream file(path);
     file << o.c_str();
 }
+

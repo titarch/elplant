@@ -8,6 +8,7 @@
 #include <string>
 #include <fstream>
 #include <SFML/Graphics.hpp>
+#include <utility>
 #include <yaml-cpp/yaml.h>
 #include "../grammar/Grammar.h"
 #include "../utils/Vector.h"
@@ -16,11 +17,11 @@
 #include "Shapes.hh"
 #include "Plant.hh"
 
-
 struct SeaTurtle : public Cylinder {
     Vec3f l, u;
 
-    SeaTurtle(const Vec3f& o, double r, double h, unsigned color_index) : Cylinder(o, UnitVec3f::H, r, h, color_index), l(UnitVec3f::L), u(UnitVec3f::U) {}
+    SeaTurtle(const Vec3f& o, double r, double h, unsigned color_index) : Cylinder(o, UnitVec3f::H, r, h, color_index),
+                                                                          l(UnitVec3f::L), u(UnitVec3f::U) {}
 
     void rotate(const Mat3f& r) {
         d = r * d;
@@ -40,6 +41,16 @@ struct Turtle {
     }
 };
 
+struct GrammarData {
+    std::string name;
+    Grammar g;
+    double angle;
+    int n;
+
+    GrammarData(std::string name, Grammar g, double angle, int n) : name(std::move(name)), g(std::move(g)),
+                                                                    angle(angle), n(n) {}
+};
+
 class Engine {
 public:
     Engine(unsigned width, unsigned height) : width_(width), height_(height) {}
@@ -47,7 +58,8 @@ public:
     [[nodiscard]] lines draw(std::string const& s, double angle, double length) const;
     [[nodiscard]] Leaf draw_leaf(std::string const& s, unsigned &index, SeaTurtle& turtle, double angle, double length) const;
     [[nodiscard]] Plant draw(std::string const& s, double angle, double length, double thickness) const;
-    void render(const Grammar& g, int n, double angle, double length) const;
+    [[nodiscard]] std::vector<GrammarData> load_grammars(std::string const& path) const;
+    void render(std::string const& path) const;
     void save(cylinders const& cls, const char* path);
 protected:
     unsigned width_, height_;
