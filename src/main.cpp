@@ -2,8 +2,18 @@
 #include "grammar/Grammar.h"
 #include "engine/Engine.h"
 
-int main() {
+#define DEFAULT_RENDER_MODE "3D"
+
+int main(int argc, char *argv[]) {
+    const std::string render_mode = argc == 2 ? argv[1] : DEFAULT_RENDER_MODE;
+
     Engine eng(1920, 1080);
+
+    if (render_mode == "2D")
+        eng.render("../grammars.yaml");
+    else if (render_mode != "3D")
+        throw std::invalid_argument("Unrecognized render mode");
+
     Grammar g("P");
     g.add_rule('P', "I+[P+O]--//[--L]I[++L]-[PO]++PO");
     g.add_rule('I', "FS[//&&L][//^^L]FS");
@@ -19,5 +29,5 @@ int main() {
     for (const auto& c : p.cyls)
         std::cout << c << std::endl;
     p.save_plant("plant.obj", "plant.mtl", mtls);
-    return 0;
+
 }
