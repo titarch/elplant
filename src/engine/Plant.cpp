@@ -29,7 +29,7 @@ void Plant::save_plant(std::string const& obj_path, std::string const& mtl_path,
     obj_out << "mtllib " << mtl_path << std::endl;
     for (auto const& c: cyls) {
         obj_out << "o Cylinder" << num_cyls << std::endl;
-        obj_out << "usemtl " << materials[c.color_index].name << std::endl;
+        obj_out << "usemtl " << materials[c.color_index % materials.size()].name << std::endl;
         m = c.to_mesh(10, 2);
         m.save_obj(obj_out, num_vertices);
         num_vertices += m.vertices.size();
