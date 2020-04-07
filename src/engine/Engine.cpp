@@ -184,6 +184,12 @@ void Engine::render(std::string const& path) const {
     normalize(lines, (float) width_, (float) height_, 0.9);
     sf::RenderWindow window(sf::VideoMode(width_, height_), "sfml-elplant");
 
+    sf::Font font;
+    font.loadFromFile("../font/term.ttf");
+    sf::Text tname(gd.name, font, 42);
+    tname.setFillColor(sf::Color::White);
+
+
     while (window.isOpen()) {
         sf::Event event{};
         while (window.pollEvent(event)) {
@@ -202,7 +208,7 @@ void Engine::render(std::string const& path) const {
                         case sf::Keyboard::N:
                             gidx = (gidx + 1) % gds.size();
                             gd = gds[gidx];
-                            std::cout << gd.name << std::endl;
+                            tname.setString(gd.name);
                             break;
                         default:
                             break;
@@ -218,7 +224,7 @@ void Engine::render(std::string const& path) const {
 
         for (auto const& line : lines)
             window.draw(line.data(), 2, sf::Lines);
-
+        window.draw(tname);
         window.display();
     }
 }

@@ -1,5 +1,5 @@
 grammars:
-  - name: "dragon"
+  - name: "Dragon"
     axiom: "FX"
     rules:
       Y: "-FX-Y"
@@ -7,7 +7,7 @@ grammars:
     angle: 90
     n: 10
 
-  - name: "snowflake"
+  - name: "Snowflake"
     axiom: "F++F++F"
     rules:
       F: "F-F++F-F"
