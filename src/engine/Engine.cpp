@@ -186,7 +186,7 @@ void Engine::render(std::string const& path) const {
 
     sf::Font font;
     font.loadFromFile("../font/term.ttf");
-    sf::Text tname(gd.name, font, 42);
+    sf::Text tname(gd.name + " n=" + std::to_string(gd.n), font, 42);
     tname.setFillColor(sf::Color::White);
 
 
@@ -204,17 +204,18 @@ void Engine::render(std::string const& path) const {
                             break;
                         case sf::Keyboard::BackSpace:
                             --gd.n;
+                            if (gd.n < 0) gd.n = 0;
                             break;
                         case sf::Keyboard::N:
                             gidx = (gidx + 1) % gds.size();
                             gd = gds[gidx];
-                            tname.setString(gd.name);
                             break;
                         default:
                             break;
                     }
                     lines = draw(gd.g.generate(gd.n), gd.angle, 1);
                     normalize(lines, (float) width_, (float) height_, 0.9);
+                    tname.setString(gd.name + " n=" + std::to_string(gd.n));
                     break;
                 default:
                     break;
