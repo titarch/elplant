@@ -60,7 +60,7 @@ public:
     [[nodiscard]] Plant draw(std::string const& s, double angle, double length, double thickness) const;
     [[nodiscard]] std::vector<GrammarData> load_grammars(std::string const& path) const;
     void render(std::string const& path) const;
-    void save(cylinders const& cls, const char* path);
+    void save(Plant const& plant, const char* path);
 protected:
     unsigned width_, height_;
 };

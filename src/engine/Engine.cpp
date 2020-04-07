@@ -230,10 +230,13 @@ void Engine::render(std::string const& path) const {
     }
 }
 
-void Engine::save(const cylinders& cls, const char* path) {
+void Engine::save(const Plant& plant, const char* path) {
     YAML::Emitter o;
     o << YAML::BeginMap << YAML::Key << "objects" << YAML::Value << YAML::BeginMap << YAML::Key << "solids"
-      << YAML::Value << YAML::BeginSeq << YAML::Flow << cls << YAML::EndSeq << YAML::EndMap << YAML::EndMap;
+      << YAML::Value << YAML::BeginSeq;
+    for (const auto& c : plant.cyls) o << c;
+    for (const auto& l : plant.lvs) o << l;
+    o << YAML::EndSeq << YAML::EndMap << YAML::EndMap;
     std::ofstream file(path);
     file << o.c_str();
 }

@@ -22,12 +22,13 @@ int main(int argc, char *argv[]) {
     g.add_rule('O', "[&&&E`/W////W////W////W////W]");
     g.add_rule('E', "FF");
     g.add_rule('W', "[`^F][{&&&&--f++f|--f++f}]");
-    auto s = g.generate(5);
+    auto s = g.generate(3);
     std::cout << s << std::endl;
     materials mtls = {DefaultMtl::Green, DefaultMtl::White, DefaultMtl::Yellow};
     Plant p = eng.draw(s, 18, 3, 0.5);
     for (const auto& c : p.cyls)
         std::cout << c << std::endl;
     p.save_plant("plant.obj", "plant.mtl", mtls);
+    eng.save(p, "objs.yaml");
 
 }
