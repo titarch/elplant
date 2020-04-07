@@ -17,7 +17,7 @@ grammars:
       - name: green
         rgb: [0.0, 1.0, 0.0]
       - name: lime
-        rgb: [0.7, 1.0, 0.0]
+        rgb: [0.3, 1.0, 0.0]
       - name: purple
         rgb: [1.0, 0.0, 1.0]
       - name: yellow
