@@ -31,7 +31,7 @@ struct Triangle {
 
     Triangle(const Vec3f& v0, const Vec3f& v1, const Vec3f& v2) : v0(v0), v1(v1), v2(v2) {}
 
-    friend YAML::Emitter& operator<<(YAML::Emitter& out, Triangle t) {
+    friend YAML::Emitter& operator<<(YAML::Emitter& out, Triangle const& t) {
         return out << YAML::BeginMap
                    << YAML::Key << "type" << YAML::Value << "triangle"
                    << YAML::Key << "v0" << YAML::Value << t.v0
