@@ -45,9 +45,9 @@ Material& Material::operator=(Material const& m) {
 YAML::Emitter& operator<<(YAML::Emitter& out, const Material& mat) {
     return out << YAML::BeginMap
                << YAML::Key << "type" << YAML::Value << "uni"
-               << YAML::Key << "r" << YAML::Value << (unsigned) mat.Kd[0] * 255
-               << YAML::Key << "g" << YAML::Value << (unsigned) mat.Kd[1] * 255
-               << YAML::Key << "b" << YAML::Value << (unsigned) mat.Kd[2] * 255
+               << YAML::Key << "r" << YAML::Value << (unsigned) (mat.Kd[0] * 255)
+               << YAML::Key << "g" << YAML::Value << (unsigned) (mat.Kd[1] * 255)
+               << YAML::Key << "b" << YAML::Value << (unsigned) (mat.Kd[2] * 255)
                << YAML::Key << "kd" << YAML::Value << 0.5
                << YAML::Key << "ks" << YAML::Value << 0.5
                << YAML::Key << "ns" << YAML::Value << 5
