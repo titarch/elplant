@@ -28,8 +28,10 @@ struct Mesh {
 
 struct Triangle {
     Vec3f v0, v1, v2;
+    unsigned color_index;
 
-    Triangle(const Vec3f& v0, const Vec3f& v1, const Vec3f& v2) : v0(v0), v1(v1), v2(v2) {}
+    Triangle(const Vec3f& v0, const Vec3f& v1, const Vec3f& v2, unsigned int colorIndex) : v0(v0), v1(v1), v2(v2),
+                                                                                           color_index(colorIndex) {}
 
     friend YAML::Emitter& operator<<(YAML::Emitter& out, Triangle const& t) {
         return out << YAML::BeginMap
@@ -37,6 +39,7 @@ struct Triangle {
                    << YAML::Key << "v0" << YAML::Value << t.v0
                    << YAML::Key << "v1" << YAML::Value << t.v1
                    << YAML::Key << "v2" << YAML::Value << t.v2
+                   << YAML::Key << "tex" << YAML::Value << t.color_index
                    << YAML::EndMap;
     }
 };
@@ -64,6 +67,7 @@ struct Cylinder {
                    << YAML::Key << "base" << YAML::Value << c.o
                    << YAML::Key << "axis" << YAML::Value << c.d * c.h
                    << YAML::Key << "radius" << YAML::Value << c.r
+                   << YAML::Key << "tex" << YAML::Value << c.color_index
                    << YAML::EndMap;
     }
 };

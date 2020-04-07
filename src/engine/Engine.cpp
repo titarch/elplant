@@ -230,9 +230,11 @@ void Engine::render(std::string const& path) const {
     }
 }
 
-void Engine::save(const Plant& plant, const char* path) {
+void Engine::save(const Plant& plant, materials const& mtls, const char* path) {
     YAML::Emitter o;
-    o << YAML::BeginMap << YAML::Key << "objects" << YAML::Value << YAML::BeginMap << YAML::Key << "solids"
+    o << YAML::BeginMap << YAML::Key << "textures" << YAML::Value << YAML::BeginSeq;
+    for (const auto& m : mtls) o << m;
+    o << YAML::EndSeq << YAML::Key << "objects" << YAML::Value << YAML::BeginMap << YAML::Key << "solids"
       << YAML::Value << YAML::BeginSeq;
     for (const auto& c : plant.cyls) o << c;
     for (const auto& l : plant.lvs) o << l;

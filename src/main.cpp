@@ -29,6 +29,6 @@ int main(int argc, char *argv[]) {
     for (const auto& c : p.cyls)
         std::cout << c << std::endl;
     p.save_plant("plant.obj", "plant.mtl", mtls);
-    eng.save(p, "objs.yaml");
+    eng.save(p, mtls, "objs.yaml");
 
 }

@@ -11,6 +11,12 @@ struct Material {
     Vec3f Kd, Ks, Ka, Ke;
     double Ns, Ni, d;
 
+    static const Material White;
+    static const Material Red;
+    static const Material Green;
+    static const Material Blue;
+    static const Material Yellow;
+
     Material() {}
 
     Material(const std::string& name, Vec3f const& Kd, Vec3f const& Ks,
@@ -24,12 +30,7 @@ struct Material {
 
     std::string get_name() const;
     friend std::ostream& operator<<(std::ostream& out, Material const& m);
-
-    static const Material White;
-    static const Material Red;
-    static const Material Green;
-    static const Material Blue;
-    static const Material Yellow;
+    friend YAML::Emitter& operator<<(YAML::Emitter& out, Material const& mat);
 };
 
 

@@ -117,6 +117,6 @@ Mesh Leaf::to_mesh() const {
 TriangleMesh Leaf::to_triangles() const {
     TriangleMesh tm{};
     for (auto i = 1u; i < vertices.size() - 1; ++i)
-        tm.emplace_back(vertices[0], vertices[i], vertices[i + 1]);
+        tm.emplace_back(vertices[0], vertices[i], vertices[i + 1], color_index);
     return tm;
 }
