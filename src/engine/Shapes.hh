@@ -26,15 +26,36 @@ struct Mesh {
     void merge_mesh(const Mesh& m);
 };
 
+struct Triangle {
+    Vec3f v0, v1, v2;
+    unsigned color_index;
+
+    Triangle(const Vec3f& v0, const Vec3f& v1, const Vec3f& v2, unsigned int colorIndex) : v0(v0), v1(v1), v2(v2),
+                                                                                           color_index(colorIndex) {}
+
+    friend YAML::Emitter& operator<<(YAML::Emitter& out, Triangle const& t) {
+        return out << YAML::BeginMap
+                   << YAML::Key << "type" << YAML::Value << "triangle"
+                   << YAML::Key << "v0" << YAML::Value << t.v0
+                   << YAML::Key << "v1" << YAML::Value << t.v1
+                   << YAML::Key << "v2" << YAML::Value << t.v2
+                   << YAML::Key << "tex" << YAML::Value << t.color_index
+                   << YAML::EndMap;
+    }
+};
+
+using TriangleMesh = std::vector<Triangle>;
+
 struct Cylinder {
     Vec3f o;
     Vec3f d;
     double r, h;
     unsigned color_index;
 
-    Cylinder(const Vec3f& o, const Vec3f& d, double r, double h, unsigned color_index) : o(o), d(d), r(r), h(h), color_index(color_index) {}
+    Cylinder(const Vec3f& o, const Vec3f& d, double r, double h, unsigned color_index) : o(o), d(d), r(r), h(h),
+                                                                                         color_index(color_index) {}
 
-    Mesh to_mesh(unsigned n, unsigned rings) const;
+    [[nodiscard]] Mesh to_mesh(unsigned n, unsigned rings) const;
 
     friend std::ostream& operator<<(std::ostream& os, Cylinder const& c) {
         return os << "C[O: " << c.o << ", D: " << c.d << ", R: " << c.r << ", H:" << c.h << "]";
@@ -46,6 +67,7 @@ struct Cylinder {
                    << YAML::Key << "base" << YAML::Value << c.o
                    << YAML::Key << "axis" << YAML::Value << c.d * c.h
                    << YAML::Key << "radius" << YAML::Value << c.r
+                   << YAML::Key << "tex" << YAML::Value << c.color_index
                    << YAML::EndMap;
     }
 };
@@ -54,11 +76,17 @@ struct Leaf {
     std::vector<Vec3f> vertices;
     unsigned color_index;
 
-    Leaf() {}
+    Leaf() : color_index{} {}
 
-    Leaf(std::vector<Vec3f> vertices, unsigned color_index): vertices(std::move(vertices)), color_index(color_index) {}
+    Leaf(std::vector<Vec3f> vertices, unsigned color_index) : vertices(std::move(vertices)), color_index(color_index) {}
 
-    Mesh to_mesh() const;
+    [[nodiscard]] Mesh to_mesh() const;
+    [[nodiscard]] TriangleMesh to_triangles() const;
+
+    friend YAML::Emitter& operator<<(YAML::Emitter& out, Leaf const& l) {
+        for (auto const& t : l.to_triangles()) out << t;
+        return out;
+    }
 };
 
 using cylinders = std::vector<Cylinder>;

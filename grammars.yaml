@@ -13,3 +13,58 @@ grammars:
       F: "F-F++F-F"
     angle: 60
     n: 3
+
+  - name: "Sierpinski"
+    axiom: "R"
+    rules:
+      L: "R+L+R"
+      R: "L-R-L"
+    angle: 60
+    n: 6
+
+  - name: "Islands & Lakes"
+    axiom: "F+F+F+F"
+    rules:
+      F: "F+f-FF+F+FF+Ff+FF-f+FF-F-FF-Ff-FFF"
+      f: "ffffff"
+    angle: 90
+    n: 2
+
+  - name: "Ivy"
+    axiom: "F"
+    rules:
+      F: "F[+F]F[-F]F"
+    angle: 25.7
+    n: 5
+
+  - name: "Willow"
+    axiom: "F"
+    rules:
+      F: "FF-[-F+F+F]+[+F-F-F]"
+    angle: 22.5
+    n: 4
+
+  - name: "Lotus"
+    axiom: "X"
+    rules:
+      X: "F[+X]F[-X]+X"
+      F: "FF"
+    angle: 20
+    n: 7
+
+  - name: "Maple Leaf"
+    axiom: "X"
+    rules:
+      X: "F[+X][-X]FX"
+      F: "FF"
+    angle: 50
+    n: 7
+
+  - name: "Stochastic"
+    axiom: "X"
+    rules:
+      F: "FF"
+      X: "F-[[X]+X]+F[+FX]-X"
+      X: "F+[[X]-X]-F[-FX]+X"
+    angle: 22.5
+    n: 4

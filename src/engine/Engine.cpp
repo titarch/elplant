@@ -20,7 +20,7 @@ static sf::Vertex convert(Vec2f const& v) {
 lines Engine::draw(const std::string& s, double angle, double length) const {
     lines lines;
     std::stack<Turtle> turtles;
-    turtles.emplace(Vec2f{{(double) width_ / 2, (double) height_ / 2}}, 0);
+    turtles.emplace(Vec2f{}, 0);
     for (char const& c : s) {
         auto& turtle = turtles.top();
         switch (c) {
@@ -186,7 +186,7 @@ void Engine::render(std::string const& path) const {
 
     sf::Font font;
     font.loadFromFile("../font/term.ttf");
-    sf::Text tname(gd.name, font, 42);
+    sf::Text tname(gd.name + " n=" + std::to_string(gd.n), font, 42);
     tname.setFillColor(sf::Color::White);
 
 
@@ -204,17 +204,18 @@ void Engine::render(std::string const& path) const {
                             break;
                         case sf::Keyboard::BackSpace:
                             --gd.n;
+                            if (gd.n < 0) gd.n = 0;
                             break;
                         case sf::Keyboard::N:
                             gidx = (gidx + 1) % gds.size();
                             gd = gds[gidx];
-                            tname.setString(gd.name);
                             break;
                         default:
                             break;
                     }
                     lines = draw(gd.g.generate(gd.n), gd.angle, 1);
                     normalize(lines, (float) width_, (float) height_, 0.9);
+                    tname.setString(gd.name + " n=" + std::to_string(gd.n));
                     break;
                 default:
                     break;
@@ -229,10 +230,15 @@ void Engine::render(std::string const& path) const {
     }
 }
 
-void Engine::save(const cylinders& cls, const char* path) {
+void Engine::save(const Plant& plant, materials const& mtls, const char* path) {
     YAML::Emitter o;
-    o << YAML::BeginMap << YAML::Key << "objects" << YAML::Value << YAML::BeginMap << YAML::Key << "solids"
-      << YAML::Value << YAML::BeginSeq << YAML::Flow << cls << YAML::EndSeq << YAML::EndMap << YAML::EndMap;
+    o << YAML::BeginMap << YAML::Key << "textures" << YAML::Value << YAML::BeginSeq;
+    for (const auto& m : mtls) o << m;
+    o << YAML::EndSeq << YAML::Key << "objects" << YAML::Value << YAML::BeginMap << YAML::Key << "solids"
+      << YAML::Value << YAML::BeginSeq;
+    for (const auto& c : plant.cyls) o << c;
+    for (const auto& l : plant.lvs) o << l;
+    o << YAML::EndSeq << YAML::EndMap << YAML::EndMap;
     std::ofstream file(path);
     file << o.c_str();
 }

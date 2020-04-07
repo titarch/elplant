@@ -4,6 +4,12 @@
 
 #include "Material.h"
 
+const Material Material::White = Material("white", {{1.0, 1.0, 1.0}}, {{0.5, 0.5, 0.5}});
+const Material Material::Red = Material("red", {{1.0, 0.0, 0.0}}, {{0.5, 0.5, 0.5}});
+const Material Material::Green = Material("green", {{0.0, 1.0, 0.0}}, {{0.5, 0.5, 0.5}});
+const Material Material::Blue = Material("blue", {{0.0, 0.0, 1.0}}, {{0.5, 0.5, 0.5}});
+const Material Material::Yellow = Material("yellow", {{1.0, 1.0, 0.0}}, {{0.5, 0.5, 0.5}});
+
 std::ostream &operator<<(std::ostream &out, Material const& m) {
     out.precision(6);
     out << "newmtl " << std::fixed << m.name << "\n";
@@ -34,4 +40,16 @@ Material& Material::operator=(Material const& m) {
     d = m.d;
 
     return *this;
+}
+
+YAML::Emitter& operator<<(YAML::Emitter& out, const Material& mat) {
+    return out << YAML::BeginMap
+               << YAML::Key << "type" << YAML::Value << "uni"
+               << YAML::Key << "r" << YAML::Value << (unsigned) mat.Kd[0] * 255
+               << YAML::Key << "g" << YAML::Value << (unsigned) mat.Kd[1] * 255
+               << YAML::Key << "b" << YAML::Value << (unsigned) mat.Kd[2] * 255
+               << YAML::Key << "kd" << YAML::Value << 0.5
+               << YAML::Key << "ks" << YAML::Value << 0.5
+               << YAML::Key << "ns" << YAML::Value << 5
+               << YAML::EndMap;
 }
