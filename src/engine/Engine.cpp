@@ -174,11 +174,11 @@ std::vector<GrammarData> Engine::load_grammars(const std::string& path) const {
 }
 
 void Engine::render(std::string const& path) const {
-    auto grammars = load_grammars(path);
-    if (grammars.empty())
+    auto gds = load_grammars(path);
+    if (gds.empty())
         throw std::invalid_argument("No grammar found in Yaml file");
     auto gidx = 0u;
-    auto& gd = grammars[gidx];
+    auto gd = gds[gidx];
 
     auto lines = draw(gd.g.generate(gd.n), gd.angle, 1);
     normalize(lines, (float) width_, (float) height_, 0.9);
@@ -200,8 +200,8 @@ void Engine::render(std::string const& path) const {
                             --gd.n;
                             break;
                         case sf::Keyboard::N:
-                            gidx = (gidx + 1) % grammars.size();
-                            gd = grammars.at(gidx);
+                            gidx = (gidx + 1) % gds.size();
+                            gd = gds[gidx];
                             std::cout << gd.name << std::endl;
                             break;
                         default:
