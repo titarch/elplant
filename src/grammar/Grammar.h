@@ -43,7 +43,10 @@ private:
 
 class Grammar {
 public:
-    explicit Grammar(String axiom) : axiom_(std::move(axiom)) {}
+    explicit Grammar(String axiom) : axiom_(std::move(axiom))
+    {
+        srand( (unsigned)time(0) );
+    }
 
     void add_rule(char lvalue, const String& rvalue, unsigned weight = 1);
     [[nodiscard]] String generate(int n) const;

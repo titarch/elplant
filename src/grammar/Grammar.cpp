@@ -13,7 +13,6 @@ void Rule::add_rule(const String &rvalue, unsigned weight) {
 
 String Rule::get_rule() const {
     // FIXME: Use better random function
-    srand( (unsigned)time(NULL) );
     unsigned rnd = (rand() % (weight_sum_));
     for(unsigned i = 0; i < weights_.size(); i++) {
         if(rnd < weights_[i])
