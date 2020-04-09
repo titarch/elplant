@@ -11,9 +11,8 @@ int main(int argc, char *argv[]) {
 
     if (render_mode == "2D")
         eng.render("../grammars/2D.yaml");
-    else if (render_mode != "3D")
+    else if (render_mode == "3D")
+        eng.render3D("../grammars/3D.yaml");
+    else
         throw std::invalid_argument("Unrecognized render mode");
-
-    eng.render3D("../grammars/3D.yaml");
-
 }
