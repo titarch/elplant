@@ -175,7 +175,12 @@ std::vector<GrammarData> Engine::load_grammars(const std::string& path) const {
             for (const auto& c : g["colors"])
                 mtls.push_back(Material::from_rgb(c["name"].as<std::string>(), c["rgb"].as<Vec3f>()));
         }
-        gds.emplace_back(name, gram, angle, n, length, thickness, mtls);
+        Camera c{};
+        if (g["camera"]) {
+            const auto& cam = g["camera"];
+            c = Camera(cam["origin"].as<Vec3f>(), cam["forward"].as<Vec3f>(), cam["up"].as<Vec3f>());
+        }
+        gds.emplace_back(name, gram, angle, n, length, thickness, mtls, c);
     }
     return gds;
 }
@@ -245,13 +250,16 @@ void Engine::render3D(const std::string& path) const {
         std::string output = "../output/";
         output += gd.name + ".";
         p.save_plant(output + "obj", output + "mtl", gd.mtls);
-        save(p, gd.mtls, output + "yaml");
+        save(p, gd.mtls, gd.cam, output + "yaml");
     }
 }
 
-void Engine::save(const Plant& plant, materials const& mtls, std::string const& path) const {
+void Engine::save(const Plant& plant, materials const& mtls, Camera const& cam, std::string const& path) const {
     YAML::Emitter o;
-    o << YAML::BeginMap << YAML::Key << "textures" << YAML::Value << YAML::BeginSeq;
+    o << YAML::BeginMap;
+    if (!cam.empty)
+        o << YAML::Key << "camera" << YAML::Value << cam;
+    o << YAML::Key << "textures" << YAML::Value << YAML::BeginSeq;
     for (const auto& m : mtls) o << m;
     o << YAML::EndSeq << YAML::Key << "objects" << YAML::Value << YAML::BeginMap << YAML::Key << "solids"
       << YAML::Value << YAML::BeginSeq;

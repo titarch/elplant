@@ -41,6 +41,24 @@ struct Turtle {
     }
 };
 
+struct Camera {
+    Vec3f origin, forward, up;
+    bool empty;
+
+    Camera() : empty(true) {};
+
+    Camera(const Vec3f& origin, const Vec3f& forward, const Vec3f& up) : origin(origin), forward(forward), up(up),
+                                                                         empty(false) {}
+
+    friend YAML::Emitter& operator<<(YAML::Emitter& out, Camera const& c) {
+        return out << YAML::BeginMap
+                   << YAML::Key << "origin" << c.origin
+                   << YAML::Key << "forward" << c.forward
+                   << YAML::Key << "up" << c.up
+                   << YAML::EndMap;
+    }
+};
+
 struct GrammarData {
     std::string name;
     Grammar g;
@@ -48,10 +66,11 @@ struct GrammarData {
     int n;
     double length, thickness;
     materials mtls;
+    Camera cam;
 
     GrammarData(const std::string& name, const Grammar& g, double angle, int n, double length, double thickness,
-                const materials& mtls) : name(name), g(g), angle(angle), n(n), length(length), thickness(thickness),
-                                         mtls(mtls) {}
+                const materials& mtls, const Camera& cam) : name(name), g(g), angle(angle), n(n), length(length),
+                                                            thickness(thickness), mtls(mtls), cam(cam) {}
 };
 
 class Engine {
@@ -65,7 +84,7 @@ public:
     [[nodiscard]] std::vector<GrammarData> load_grammars(std::string const& path) const;
     void render(std::string const& path) const;
     void render3D(std::string const& path) const;
-    void save(Plant const& plant, materials const& mtls, std::string const& path) const;
+    void save(Plant const& plant, materials const& mtls, Camera const& cam, std::string const& path) const;
 protected:
     unsigned width_, height_;
 };
