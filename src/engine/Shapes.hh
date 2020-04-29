@@ -89,8 +89,21 @@ struct Leaf {
     }
 };
 
+struct IcoSphere {
+    Vec3f center;
+    double radius;
+    unsigned color_index;
+
+    explicit IcoSphere() = default;
+    IcoSphere(Vec3f const& center, double radius, unsigned color_index)
+        : center(center), radius(radius), color_index(color_index) {}
+
+    [[nodiscard]] Mesh to_mesh() const;
+};
+
 using cylinders = std::vector<Cylinder>;
 using leaves = std::vector<Leaf>;
+using icospheres = std::vector<IcoSphere>;
 
 
 #endif //ELPLANT_SHAPES_HH

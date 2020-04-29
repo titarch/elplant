@@ -64,13 +64,14 @@ struct GrammarData {
     Grammar g;
     double angle;
     int n;
-    double length, thickness;
+    double length, thickness, sph_radius;
     materials mtls;
     Camera cam;
 
     GrammarData(const std::string& name, const Grammar& g, double angle, int n, double length, double thickness,
-                const materials& mtls, const Camera& cam) : name(name), g(g), angle(angle), n(n), length(length),
-                                                            thickness(thickness), mtls(mtls), cam(cam) {}
+                double sph_radius, const materials& mtls, const Camera& cam)
+                : name(name), g(g), angle(angle), n(n), length(length), thickness(thickness),
+                sph_radius(sph_radius), mtls(mtls), cam(cam) {}
 };
 
 class Engine {
@@ -80,7 +81,7 @@ public:
     [[nodiscard]] lines draw(std::string const& s, double angle, double length) const;
     [[nodiscard]] Leaf
     draw_leaf(std::string const& s, unsigned& index, SeaTurtle& turtle, double angle, double length) const;
-    [[nodiscard]] Plant draw(std::string const& s, double angle, double length, double thickness) const;
+    [[nodiscard]] Plant draw(std::string const& s, double angle, double length, double thickness, double sph_radius) const;
     [[nodiscard]] std::vector<GrammarData> load_grammars(std::string const& path) const;
     void render(std::string const& path) const;
     void render3D(std::string const& path) const;

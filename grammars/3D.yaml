@@ -62,3 +62,15 @@ grammars:
         rgb: [0.08, 0.02, 0.0]
       - name: green
         rgb: [0.0, 0.137, 0.0]
+  - name: "sphere"
+    axiom: "A"
+    rules:
+      A: "b"
+    angle: 22.5
+    length: 3
+    thickness: 0.5
+    sph_radius: 1
+    n: 1
+    colors:
+      - name: green
+        rgb: [0.0, 0.137, 0.0]

@@ -3,6 +3,7 @@
 //
 
 #include <fstream>
+#include <iostream>
 #include "Shapes.hh"
 
 void normalize(lines& ls, float width, float height, float stickiness) {
@@ -119,4 +120,64 @@ TriangleMesh Leaf::to_triangles() const {
     for (auto i = 1u; i < vertices.size() - 1; ++i)
         tm.emplace_back(vertices[0], vertices[i], vertices[i + 1], color_index);
     return tm;
+}
+
+Mesh IcoSphere::to_mesh() const {
+    Mesh m;
+    const float horizontal_angle = M_PI / 180 * 72;    // 72 degree = 360 / 5
+    const float elevation = atanf(1.0f / 2);  // elevation = 26.565 degree
+    int i1, i2;
+    float z, xy;
+    float hAngle1 = -M_PI / 2 - horizontal_angle / 2;  // start from -126 deg at 1st row
+    float hAngle2 = -M_PI / 2;                // start from -90 deg at 2nd row
+
+    m.vertices.resize(12);
+    // First top vertex at (0, 0, r)
+    m.vertices[0] = Vec3f{{0, 0, radius}};
+
+    // Compute 10 vertices at 1st and 2nd rows
+    for(int i = 1; i <= 5; ++i)
+    {
+        i1 = i;         // index for 1st row
+        i2 = i + 5;   // index for 2nd row
+
+        z  = radius * sinf(elevation);
+        xy = radius * cosf(elevation);
+        m.vertices[i1] = Vec3f{{xy * cosf(hAngle1), xy * sinf(hAngle1), z}};
+        m.vertices[i2] = Vec3f{{xy * cosf(hAngle2), xy * sinf(hAngle2), -z}};
+
+        // Next horizontal angles
+        hAngle1 += horizontal_angle;
+        hAngle2 += horizontal_angle;
+    }
+    // Last bottom vertex at (0, 0, -r)
+    m.vertices[11] = Vec3f{{0, 0, -radius}};
+
+    // Get surface normals
+    for (const auto v: m.vertices)
+        m.normals.emplace_back((v - center));
+
+    // Add 20 triangles
+    m.faces.emplace_back(std::vector<unsigned>{0, 1, 2});
+    m.faces.emplace_back(std::vector<unsigned>{0, 2, 3});
+    m.faces.emplace_back(std::vector<unsigned>{0, 3, 4});
+    m.faces.emplace_back(std::vector<unsigned>{0, 4, 5});
+    m.faces.emplace_back(std::vector<unsigned>{0, 5, 1});
+    m.faces.emplace_back(std::vector<unsigned>{11, 7, 6});
+    m.faces.emplace_back(std::vector<unsigned>{11, 8, 7});
+    m.faces.emplace_back(std::vector<unsigned>{11, 9, 8});
+    m.faces.emplace_back(std::vector<unsigned>{11, 10, 9});
+    m.faces.emplace_back(std::vector<unsigned>{11, 6, 10});
+    m.faces.emplace_back(std::vector<unsigned>{6, 1, 10});
+    m.faces.emplace_back(std::vector<unsigned>{1, 6, 2});
+    m.faces.emplace_back(std::vector<unsigned>{1, 5, 10});
+    m.faces.emplace_back(std::vector<unsigned>{6, 7, 2});
+    m.faces.emplace_back(std::vector<unsigned>{3, 2, 7});
+    m.faces.emplace_back(std::vector<unsigned>{3, 7, 8});
+    m.faces.emplace_back(std::vector<unsigned>{4, 3, 8});
+    m.faces.emplace_back(std::vector<unsigned>{4, 8, 9});
+    m.faces.emplace_back(std::vector<unsigned>{5, 4, 9});
+    m.faces.emplace_back(std::vector<unsigned>{5, 9, 10});
+
+    return m;
 }

@@ -93,10 +93,11 @@ Leaf Engine::draw_leaf(std::string const& s, unsigned& index,
     return Leaf(vertices, turtle.color_index);
 }
 
-Plant Engine::draw(const std::string& s, double angle, double length, double thickness) const {
+Plant Engine::draw(const std::string& s, double angle, double length, double thickness, double sph_radius) const {
     angle = angle * M_PI / 180;
     Plant plt;
     Leaf l;
+    IcoSphere ico;
     std::stack<SeaTurtle> turtles;
     turtles.emplace(Vec3f{}, thickness, length, 0);
     for (unsigned i = 0; i < s.size(); i++) {
@@ -139,6 +140,10 @@ Plant Engine::draw(const std::string& s, double angle, double length, double thi
                 l = draw_leaf(s, i, turtle, angle, length);
                 plt.add_leaf(l);
                 break;
+            case 'b':
+                ico = IcoSphere(turtle.o, sph_radius, turtle.color_index);
+                plt.add_icosphere(ico);
+                break;
             case 'F':
                 plt.add_cylinder(dynamic_cast<Cylinder&>(turtle));
                 [[fallthrough]];
@@ -170,6 +175,7 @@ std::vector<GrammarData> Engine::load_grammars(const std::string& path) const {
         auto n = g["n"].as<int>();
         double length = g["length"] ? g["length"].as<double>() : 1;
         double thickness = g["thickness"] ? g["thickness"].as<double>() : 1;
+        double sph_radius = g["sph_radius"] ? g["sph_radius"].as<double>(): 1;
         materials mtls{};
         if (g["colors"]) {
             for (const auto& c : g["colors"])
@@ -180,7 +186,7 @@ std::vector<GrammarData> Engine::load_grammars(const std::string& path) const {
             const auto& cam = g["camera"];
             c = Camera(cam["origin"].as<Vec3f>(), cam["forward"].as<Vec3f>(), cam["up"].as<Vec3f>());
         }
-        gds.emplace_back(name, gram, angle, n, length, thickness, mtls, c);
+        gds.emplace_back(name, gram, angle, n, length, thickness, sph_radius, mtls, c);
     }
     return gds;
 }
@@ -246,7 +252,7 @@ void Engine::render3D(const std::string& path) const {
     auto gds = load_grammars(path);
     for (const auto& gd : gds) {
         std::cout << "Rendering " << gd.name << std::endl;
-        Plant p = draw(gd.g.generate(gd.n), gd.angle, gd.length, gd.thickness);
+        Plant p = draw(gd.g.generate(gd.n), gd.angle, gd.length, gd.thickness, gd.sph_radius);
         std::string output = "../output/";
         output += gd.name + ".";
         p.save_plant(output + "obj", output + "mtl", gd.mtls);
