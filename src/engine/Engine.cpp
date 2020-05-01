@@ -195,20 +195,51 @@ Plant Engine::draw(const std::string& s, double angle, double length, double thi
     return plt;
 }
 
+static BaseGrammar* parse_classic_rules(YAML::Node const& rules, std::string const& axiom) {
+    auto* gram = new Grammar(axiom);
+    for (YAML::const_iterator it = rules.begin(); it != rules.end(); ++it) {
+        auto lhs = it->first.as<char>();
+        auto rhs = it->second.as<std::string>();
+        gram->add_rule(lhs, rhs);
+    }
+    return gram;
+}
+
+static BaseGrammar* parse_parametric_rules(YAML::Node const& rules, std::string const& axiom) {
+   auto* gram = new ParamGrammar(axiom);
+   for (YAML::const_iterator it = rules.begin(); it != rules.end(); ++it) {
+       auto c = it->first.as<char>();
+       auto const& rhs = it->second;
+       auto params = it->second["params"].as<std::vector<char>>();
+       ParamRule rule{params};
+       for (auto const& cond : rhs["conds"]) {
+           auto param = rhs["param"] ? rhs["param"].as<char>() : params[0];
+           auto op = rhs["op"] ? rhs["op"].as<Op>() : Op::TRUE;
+           auto val = rhs["value"] ? rhs["value"].as<double>() : 0.0;
+           auto rval = rhs["rvalue"].as<std::string>();
+           rule.add_conditional_rule(param, op, val, rval);
+       }
+       gram->add_rule(c, rule);
+   }
+   return gram;
+}
+
 std::vector<GrammarData> Engine::load_grammars(const std::string& path) const {
     std::vector<GrammarData> gds;
     YAML::Node node = YAML::LoadFile(path);
     for (const auto& g : node["grammars"]) {
         auto name = g["name"].as<std::string>();
+        auto type = g["type"].as<std::string>();
         auto axiom = g["axiom"].as<std::string>();
-        Grammar gram(axiom);
+        BaseGrammar* gram;
         const auto& rules = g["rules"];
-        for (YAML::const_iterator it = rules.begin(); it != rules.end(); ++it) {
-            auto lhs = it->first.as<char>();
-            auto rhs = it->second.as<std::string>();
-            gram.add_rule(lhs, rhs);
-        }
-        auto angle = g["angle"].as<double>();
+        if (type == "classic")
+            gram = parse_classic_rules(rules, axiom);
+        else if (type == "parametric")
+            gram = parse_parametric_rules(rules, axiom);
+        else
+            throw std::invalid_argument(type + ": invalid 3D grammar type");
+        auto angle = g["angle"] ? g["angle"].as<double>() : 30;
         auto n = g["n"].as<int>();
         double length = g["length"] ? g["length"].as<double>() : 1;
         double thickness = g["thickness"] ? g["thickness"].as<double>() : 1;
@@ -235,7 +266,7 @@ void Engine::render(std::string const& path) const {
     auto gidx = 0u;
     auto gd = gds[gidx];
 
-    auto lines = draw(gd.g.generate(gd.n), gd.angle, 1);
+    auto lines = draw(gd.g->generate(gd.n), gd.angle, 1);
     normalize(lines, (float) width_, (float) height_, 0.9);
     sf::RenderWindow window(sf::VideoMode(width_, height_), "sfml-elplant");
 
@@ -268,7 +299,7 @@ void Engine::render(std::string const& path) const {
                         default:
                             break;
                     }
-                    lines = draw(gd.g.generate(gd.n), gd.angle, 1);
+                    lines = draw(gd.g->generate(gd.n), gd.angle, 1);
                     normalize(lines, (float) width_, (float) height_, 0.9);
                     tname.setString(gd.name + " n=" + std::to_string(gd.n));
                     break;
@@ -289,7 +320,7 @@ void Engine::render3D(const std::string& path) const {
     auto gds = load_grammars(path);
     for (const auto& gd : gds) {
         std::cout << "Rendering " << gd.name << std::endl;
-        Plant p = draw(gd.g.generate(gd.n), gd.angle, gd.length, gd.thickness, gd.sph_radius);
+        Plant p = draw(gd.g->generate(gd.n), gd.angle, gd.length, gd.thickness, gd.sph_radius);
         std::string output = "../output/";
         output += gd.name + ".";
         p.save_plant(output + "obj", output + "mtl", gd.mtls);

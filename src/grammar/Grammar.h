@@ -13,9 +13,18 @@
 #include <utility>
 #include <random>
 #include "exprtk.hpp"
+#include "conditional.h"
 
 using String = std::string;
 using Strings = std::vector<String>;
+
+
+class BaseGrammar {
+public:
+    BaseGrammar() = default;
+    [[nodiscard]] virtual String generate(int n) const = 0;
+};
+
 
 class Rule {
 public:
@@ -42,60 +51,19 @@ private:
     void update_summed_weights();
 };
 
-class Grammar {
+class Grammar : public BaseGrammar {
 public:
-    explicit Grammar(String axiom) : axiom_(std::move(axiom)) {
-        srand((unsigned) time(0));
+    explicit Grammar(String axiom) : BaseGrammar(), axiom_(std::move(axiom)) {
+        srand((unsigned) time(nullptr));
     }
 
-    void add_rule(char lvalue, const String& rvalue, unsigned weight = 1);
-    [[nodiscard]] String generate(int n) const;
+    Grammar& add_rule(char lvalue, const String& rvalue, unsigned weight = 1);
+    [[nodiscard]] String generate(int n) const override;
 private:
     void generate_rec(String& buffer, const String& cur_rule, int max_rec, int cur_rec) const;
 
     String axiom_;
     std::map<char, Rule> rules_;
-};
-
-
-enum class Op {
-    LT,
-    LE,
-    GT,
-    GE,
-    EQ,
-    NE,
-    TRUE,
-    FALSE
-};
-
-struct Condition {
-    Op op;
-    double rval;
-
-    Condition(Op op, double rval) : op(op), rval(rval) {}
-
-    [[nodiscard]] bool evaluate(double var) const {
-        switch (op) {
-            case Op::LT:
-                return var < rval;
-            case Op::LE:
-                return var <= rval;
-            case Op::GT:
-                return var > rval;
-            case Op::GE:
-                return var >= rval;
-            case Op::EQ:
-                return var == rval;
-            case Op::NE:
-                return var != rval;
-            case Op::TRUE:
-                return true;
-            case Op::FALSE:
-                return false;
-        }
-        return false;
-    }
 };
 
 struct ConditionRule {
@@ -121,29 +89,29 @@ public:
         return *this;
     }
 
-    String evaluate(std::vector<double> const& values_);
+    [[nodiscard]] String evaluate(std::vector<double> const& values_) const;
 
 private:
-    String substitute(const String& s, const std::vector<double>& values);
+    [[nodiscard]] String substitute(const String& s, const std::vector<double>& values) const;
     std::vector<char> params_;
     std::vector<ConditionRule> crs_;
 };
 
-class ParamGrammar {
+class ParamGrammar : public BaseGrammar {
 public:
-    explicit ParamGrammar(String axiom) : axiom_(std::move(axiom)), rules_() {}
+    explicit ParamGrammar(String axiom) : BaseGrammar(), axiom_(std::move(axiom)), rules_() {}
 
     ParamGrammar& add_rule(char c, ParamRule const& pr) {
         rules_.insert({c, pr});
         return *this;
     }
 
-    String generate(int n) {
+    [[nodiscard]] String generate(int n) const override {
         return generate_rec(axiom_, 0, n);
     }
 
 private:
-    String generate_rec(String const& in, int cur_rec, int max_rec);
+    [[nodiscard]] String generate_rec(String const& in, int cur_rec, int max_rec) const;
 
     String axiom_;
     std::map<char, ParamRule> rules_;

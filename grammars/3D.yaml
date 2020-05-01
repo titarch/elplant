@@ -1,5 +1,6 @@
 grammars:
   - name: "daffodil"
+    type: "classic"
     axiom: "P"
     rules:
       P: "I+[P+O]--//[--L]I[++L]-[PO]++PO"
@@ -26,7 +27,9 @@ grammars:
         rgb: [1.0, 0.0, 1.0]
       - name: yellow
         rgb: [1.0, 1.0, 0.0]
+
   - name: "hilbert"
+    type: "classic"
     axiom: "A"
     rules:
       A: "B-F+CFC+F-D&F^D-F+&&CFC+F+B//`"
@@ -46,7 +49,9 @@ grammars:
         rgb: [0.0, 0.0, 1.0]
       - name: yellow
         rgb: [1.0, 1.0, 0.0]
+
   - name: "bush"
+    type: "classic"
     axiom: "A"
     rules:
       A: "[&FL[``b]!A]/////[&FL!A]///////[&FL!A]"
@@ -65,7 +70,9 @@ grammars:
         rgb: [0.0, 0.137, 0.0]
       - name: red
         rgb: [0.8, 0.02, 0.0]
+
   - name: "sphere"
+    type: "classic"
     axiom: "A"
     rules:
       A: "bfA"
@@ -77,3 +84,25 @@ grammars:
     colors:
       - name: green
         rgb: [0.0, 0.137, 0.0]
+
+  - name: "tree"
+    type: "parametric"
+    axiom: "A(1,10)"
+    rules:
+      A:
+        param: ['l', 'w']
+        conds:
+          - param: 'l'
+            #            op: true -> Should be default when not specified
+            #            value: 0 -> same
+            rvalue: "!(w)F(l)[&(10)B(l*0.9,w*0.707)]/(180)[&(60)B(l*0.7,w*0.707)]"
+      B:
+        param: ['l', 'w']
+        conds:
+          - # param: 'l' -> could be optional too
+            rvalue: "!(w)F(l)[+(10)$B(l*0.9,w*0.707)][-(60)$B(l*0.7,w*0.707)]"
+    n: 10
+    colors:
+      - name: green
+        rgb: [0.0, 1.0, 0.0]
+
