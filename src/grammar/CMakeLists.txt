@@ -2,4 +2,6 @@ set(grammar_src_files
         Grammar.h
         Grammar.cpp)
 add_library(grammar ${grammar_src_files})
-target_link_libraries(grammar PUBLIC)
+add_library(expr exprtk.hpp)
+set_target_properties(expr PROPERTIES LINKER_LANGUAGE CXX)
+target_link_libraries(grammar PRIVATE expr)
