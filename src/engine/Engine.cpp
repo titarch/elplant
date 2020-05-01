@@ -159,7 +159,7 @@ Plant Engine::draw(const std::string& s, double angle, double length, double thi
                 turtle.rotate(Mat3f::R(turtle.u, M_PI));
                 break;
             case '$':
-                turtle.l = (Vec3f{{0, 1, 0}} ^ turtle.d).normalized();
+                turtle.l = (Vec3f{{0, 0, 1}} ^ turtle.d).normalized();
                 turtle.u = turtle.d ^ turtle.l;
                 break;
             case'%':

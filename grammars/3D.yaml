@@ -118,7 +118,8 @@ grammars:
   - name: "capsella"
     type: "parametric"
     axiom: "I(9)a(13)"
-    n: 100
+    n: 36
+    angle: 18
     colors:
       - name: green
         rgb: [0.0, 1.0, 0.0]
