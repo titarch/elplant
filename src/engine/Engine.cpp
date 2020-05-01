@@ -229,16 +229,14 @@ std::vector<GrammarData> Engine::load_grammars(const std::string& path) const {
     YAML::Node node = YAML::LoadFile(path);
     for (const auto& g : node["grammars"]) {
         auto name = g["name"].as<std::string>();
-        auto type = g["type"].as<std::string>();
+        auto type = g["type"] ? g["type"].as<std::string>() : "classic";
         auto axiom = g["axiom"].as<std::string>();
         BaseGrammar* gram;
         const auto& rules = g["rules"];
-        if (type == "classic")
-            gram = parse_classic_rules(rules, axiom);
-        else if (type == "parametric")
+        if (type == "parametric")
             gram = parse_parametric_rules(rules, axiom);
         else
-            throw std::invalid_argument(type + ": invalid 3D grammar type");
+            gram = parse_classic_rules(rules, axiom);
         auto angle = g["angle"] ? g["angle"].as<double>() : 30;
         auto n = g["n"].as<int>();
         double length = g["length"] ? g["length"].as<double>() : 1;
