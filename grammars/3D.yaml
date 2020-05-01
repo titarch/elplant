@@ -92,17 +92,74 @@ grammars:
       A:
         parameters: ['l', 'w']
         conds:
-          - parameter: 'l'
-            #            op: true -> Should be default when not specified
-            #            value: 0 -> same
-            rvalue: "!(w)F(l)[&(10)B(l*0.9,w*0.707)]/(180)[&(60)B(l*0.7,w*0.707)]"
+          - rvalue: "!(w)F(l)[&(10)B(l*0.9,w*0.707)]/(180)[&(60)B(l*0.7,w*0.707)]"
       B:
         parameters: ['l', 'w']
         conds:
-          - # parameter: 'l' -> could be optional too
-            rvalue: "!(w)F(l)[+(10)$B(l*0.9,w*0.707)][-(60)$B(l*0.7,w*0.707)]"
+          - rvalue: "!(w)F(l)[+(10)$B(l*0.9,w*0.707)][-(60)$B(l*0.7,w*0.707)]"
     n: 10
     colors:
       - name: green
         rgb: [0.0, 1.0, 0.0]
 
+  - name: "capsella"
+    type: "parametric"
+    axiom: "I(9)a(13)"
+    n: 100
+    colors:
+      - name: green
+        rgb: [0.0, 1.0, 0.0]
+    rules:
+      a:
+        parameters: ['t']
+        conds:
+          - parameter: 't'
+            op: 'gt'
+            value: 0
+            rvalue: "[&(70)L]/(137.5)I(10)a(t-1)"
+          - parameter: 't'
+            op: 'eq'
+            value: 0
+            rvalue: "[&(70)L]/(137.5)I(10)A"
+      A:
+        conds:
+          - rvalue: "[&(18)u(4)FFI(10)I(5)X(5)KKKK]/(137.5)I(8)A"
+      I:
+        parameters: ['t']
+        conds:
+          - parameter: 't'
+            op: 'gt'
+            value: 0
+            rvalue: "FI(t-1)"
+          - parameter: 't'
+            op: 'eq'
+            value: 0
+            rvalue: "F"
+      u:
+        parameters: ['t']
+        conds:
+          - parameter: 't'
+            op: 'gt'
+            value: 0
+            rvalue: "FI(t-1)"
+          - parameter: 't'
+            op: 'eq'
+            value: 0
+            rvalue: "&(9)"
+      L:
+        conds:
+          - rvalue: "[{.-FI(7)+FI(7)+FI(7)}][{.+FI(7)-FI(7)-FI(7)}]"
+      K:
+        conds:
+          - rvalue: "[&{.+FI(2)--FI(2)}][&{.-FI(2)++FI(2)}]/(90)"
+      X:
+        parameters: ['t']
+        conds:
+          - parameter: 't'
+            op: 'gt'
+            value: 0
+            rvalue: "X(t-1)"
+          - parameter: 't'
+            op: 'eq'
+            value: 0
+            rvalue: "^(50)[[-GGGG++[GGG[++G{.].].].++GGGG.--GGG.--G.}]%"

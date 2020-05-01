@@ -72,9 +72,12 @@ String ParamRule::substitute(String const& s, std::vector<double> const& values)
 }
 
 String ParamRule::evaluate(std::vector<double> const& values_) const {
-    for (auto const& c : crs_)
+    for (auto const& c : crs_) {
+        if (values_.empty())
+            return c.rvalue;
         if (c.evaluate(values_[c.lpos]))
             return substitute(c.rvalue, values_);
+    }
     throw std::runtime_error("No condition matched...");
 }
 

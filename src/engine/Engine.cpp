@@ -161,6 +161,9 @@ Plant Engine::draw(const std::string& s, double angle, double length, double thi
                 turtle.l = (Vec3f{{0, 1, 0}} ^ turtle.d).normalized();
                 turtle.u = turtle.d ^ turtle.l;
                 break;
+            case'%':
+                std::cout << "% not handled yet" << std::endl;
+                break;
             case '`':
                 turtle.color_index++;
                 break;
@@ -210,10 +213,10 @@ static BaseGrammar* parse_parametric_rules(YAML::Node const& rules, std::string 
    for (YAML::const_iterator it = rules.begin(); it != rules.end(); ++it) {
        auto c = it->first.as<char>();
        auto const& rhs = it->second;
-       auto params = it->second["parameters"].as<std::vector<char>>();
+       auto params = rhs["parameters"] ? rhs["parameters"].as<std::vector<char>>() : std::vector<char>{};
        ParamRule rule{params};
        for (auto const& cond : rhs["conds"]) {
-           auto param = cond["parameter"] ? cond["parameter"].as<char>() : params[0];
+           auto param = cond["parameter"] ? cond["parameter"].as<char>() : (params.empty() ? '?': params[0]);
            auto op = cond["op"] ? cond["op"].as<Op>() : Op::TRUE;
            auto val = cond["value"] ? cond["value"].as<double>() : 0.0;
            auto rval = cond["rvalue"].as<std::string>();
