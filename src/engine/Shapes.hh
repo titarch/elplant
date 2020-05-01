@@ -94,7 +94,7 @@ struct IcoSphere {
     double radius;
     unsigned color_index;
 
-    explicit IcoSphere() = default;
+    IcoSphere() : center{}, radius{}, color_index{} {}
 
     IcoSphere(Vec3f const& center, double radius, unsigned color_index)
             : center(center), radius(radius), color_index(color_index) {}
