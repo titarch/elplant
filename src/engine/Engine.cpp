@@ -56,6 +56,7 @@ lines Engine::draw(const std::string& s, double angle, double length) const {
 Leaf Engine::draw_leaf(std::string const& s, unsigned& index,
                        SeaTurtle& turtle, double angle, double length) const {
     std::vector<Vec3f> vertices;
+    angle = angle * M_PI / 180;
     while (s[index] != '}') {
         switch (s[index]) {
             case '+':
