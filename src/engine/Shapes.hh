@@ -94,11 +94,21 @@ struct IcoSphere {
     double radius;
     unsigned color_index;
 
-    explicit IcoSphere() = default;
+    IcoSphere() : center{}, radius{}, color_index{} {}
+
     IcoSphere(Vec3f const& center, double radius, unsigned color_index)
-        : center(center), radius(radius), color_index(color_index) {}
+            : center(center), radius(radius), color_index(color_index) {}
 
     [[nodiscard]] Mesh to_mesh() const;
+
+    friend YAML::Emitter& operator<<(YAML::Emitter& out, IcoSphere const& s) {
+        return out << YAML::BeginMap
+                   << YAML::Key << "type" << YAML::Value << "sphere"
+                   << YAML::Key << "origin" << YAML::Value << s.center
+                   << YAML::Key << "radius" << YAML::Value << s.radius
+                   << YAML::Key << "tex" << YAML::Value << s.color_index
+                   << YAML::EndMap;
+    }
 };
 
 using cylinders = std::vector<Cylinder>;

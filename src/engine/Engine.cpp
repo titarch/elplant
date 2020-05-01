@@ -270,6 +270,7 @@ void Engine::save(const Plant& plant, materials const& mtls, Camera const& cam, 
     o << YAML::EndSeq << YAML::Key << "objects" << YAML::Value << YAML::BeginMap << YAML::Key << "solids"
       << YAML::Value << YAML::BeginSeq;
     for (const auto& c : plant.cyls) o << c;
+    for (const auto& s : plant.isphs) o << s;
     for (const auto& l : plant.lvs) o << l;
     o << YAML::EndSeq << YAML::EndMap << YAML::EndMap;
     std::ofstream file(path);
