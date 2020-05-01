@@ -93,11 +93,32 @@ Leaf Engine::draw_leaf(std::string const& s, unsigned& index,
     return Leaf(vertices, turtle.color_index);
 }
 
+
+
+double get_param(std::string const& s, unsigned& i, double def) {
+    if (s[i + 1] != '(') return def;
+    std::string exp;
+    i += 2;
+    for (; s[i] != ')'; ++i)
+        exp.push_back(s[i]);
+    return evaluate(exp);
+}
+
+double get_angle(std::string const& s, unsigned& i, double default_angle) {
+    return get_param(s, i, default_angle) * M_PI / 180;
+}
+
+double get_length(std::string const& s, unsigned& i, double default_length) {
+    return get_param(s, i, default_length);
+}
+
 Plant Engine::draw(const std::string& s, double angle, double length, double thickness, double sph_radius) const {
-    angle = angle * M_PI / 180;
+    double real_angle = angle;
+    double real_length = length;
     Plant plt;
     Leaf l;
     IcoSphere ico;
+    Cylinder cyl;
     std::stack<SeaTurtle> turtles;
     turtles.emplace(Vec3f{}, thickness, length, 0);
     for (unsigned i = 0; i < s.size(); i++) {
@@ -110,22 +131,28 @@ Plant Engine::draw(const std::string& s, double angle, double length, double thi
                 turtles.pop();
                 break;
             case '+':
-                turtle.rotate(Mat3f::R(turtle.u, angle));
+                real_angle = get_angle(s, i, angle);
+                turtle.rotate(Mat3f::R(turtle.u, real_angle));
                 break;
             case '-':
-                turtle.rotate(Mat3f::R(turtle.u, -angle));
+                real_angle = get_angle(s, i, angle);
+                turtle.rotate(Mat3f::R(turtle.u, -real_angle));
                 break;
             case '&':
-                turtle.rotate(Mat3f::R(turtle.l, angle));
+                real_angle = get_angle(s, i, angle);
+                turtle.rotate(Mat3f::R(turtle.l, real_angle));
                 break;
             case '^':
-                turtle.rotate(Mat3f::R(turtle.l, -angle));
+                real_angle = get_angle(s, i, angle);
+                turtle.rotate(Mat3f::R(turtle.l, -real_angle));
                 break;
             case '\\':
-                turtle.rotate(Mat3f::R(turtle.d, angle));
+                real_angle = get_angle(s, i, angle);
+                turtle.rotate(Mat3f::R(turtle.d, real_angle));
                 break;
             case '/':
-                turtle.rotate(Mat3f::R(turtle.d, -angle));
+                real_angle = get_angle(s, i, angle);
+                turtle.rotate(Mat3f::R(turtle.d, -real_angle));
                 break;
             case '|':
                 turtle.rotate(Mat3f::R(turtle.u, M_PI));
@@ -149,10 +176,16 @@ Plant Engine::draw(const std::string& s, double angle, double length, double thi
                 plt.add_icosphere(ico);
                 break;
             case 'F':
-                plt.add_cylinder(dynamic_cast<Cylinder&>(turtle));
+                cyl = dynamic_cast<Cylinder&>(turtle);
+                real_length = get_length(s, i, length);
+                cyl.h = real_length;
+                plt.add_cylinder(cyl);
                 [[fallthrough]];
             case 'f':
-                turtle.o += turtle.d * length;
+                turtle.o += turtle.d * real_length;
+                break;
+            case '(':
+                for (; s[i] != ')'; ++i);
                 break;
             default:
                 if (!isalpha(s[i]))

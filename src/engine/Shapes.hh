@@ -52,6 +52,8 @@ struct Cylinder {
     double r, h;
     unsigned color_index;
 
+    Cylinder() : o(), d(), r(), h(), color_index() {}
+
     Cylinder(const Vec3f& o, const Vec3f& d, double r, double h, unsigned color_index) : o(o), d(d), r(r), h(h),
                                                                                          color_index(color_index) {}
 
