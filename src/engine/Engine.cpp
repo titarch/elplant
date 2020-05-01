@@ -210,13 +210,13 @@ static BaseGrammar* parse_parametric_rules(YAML::Node const& rules, std::string 
    for (YAML::const_iterator it = rules.begin(); it != rules.end(); ++it) {
        auto c = it->first.as<char>();
        auto const& rhs = it->second;
-       auto params = it->second["params"].as<std::vector<char>>();
+       auto params = it->second["parameters"].as<std::vector<char>>();
        ParamRule rule{params};
        for (auto const& cond : rhs["conds"]) {
-           auto param = rhs["param"] ? rhs["param"].as<char>() : params[0];
-           auto op = rhs["op"] ? rhs["op"].as<Op>() : Op::TRUE;
-           auto val = rhs["value"] ? rhs["value"].as<double>() : 0.0;
-           auto rval = rhs["rvalue"].as<std::string>();
+           auto param = cond["parameter"] ? cond["parameter"].as<char>() : params[0];
+           auto op = cond["op"] ? cond["op"].as<Op>() : Op::TRUE;
+           auto val = cond["value"] ? cond["value"].as<double>() : 0.0;
+           auto rval = cond["rvalue"].as<std::string>();
            rule.add_conditional_rule(param, op, val, rval);
        }
        gram->add_rule(c, rule);

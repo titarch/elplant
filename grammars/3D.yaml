@@ -90,16 +90,16 @@ grammars:
     axiom: "A(1,10)"
     rules:
       A:
-        param: ['l', 'w']
+        parameters: ['l', 'w']
         conds:
-          - param: 'l'
+          - parameter: 'l'
             #            op: true -> Should be default when not specified
             #            value: 0 -> same
             rvalue: "!(w)F(l)[&(10)B(l*0.9,w*0.707)]/(180)[&(60)B(l*0.7,w*0.707)]"
       B:
-        param: ['l', 'w']
+        parameters: ['l', 'w']
         conds:
-          - # param: 'l' -> could be optional too
+          - # parameter: 'l' -> could be optional too
             rvalue: "!(w)F(l)[+(10)$B(l*0.9,w*0.707)][-(60)$B(l*0.7,w*0.707)]"
     n: 10
     colors:
