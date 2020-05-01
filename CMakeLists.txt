@@ -5,8 +5,8 @@ set(CMAKE_CXX_STANDARD 20)
 
 set(EXECUTABLE_NAME elplant)
 
-set(CMAKE_CXX_FLAGS_RELEASE  "-O3 -Wall -Wextra")
-set(CMAKE_CXX_FLAGS_DEBUG    "-g  -Wall -Wextra")
+set(CMAKE_CXX_FLAGS_RELEASE  "-O3 -Wall -Wextra -Werror -pedantic")
+set(CMAKE_CXX_FLAGS_DEBUG    "-g  -Wall -Wextra -Werror -pedantic")
 
 find_package(SFML 2.5 COMPONENTS graphics REQUIRED)
 find_package(YAML-CPP REQUIRED)
