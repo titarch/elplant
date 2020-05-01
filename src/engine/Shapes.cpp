@@ -154,8 +154,10 @@ Mesh IcoSphere::to_mesh() const {
     m.vertices[11] = Vec3f{{0, 0, -radius}};
 
     // Get surface normals
-    for (const auto v: m.vertices)
+    for (auto& v: m.vertices) {
+        v += center;
         m.normals.emplace_back((v - center));
+    }
 
     // Add 20 triangles
     m.faces.emplace_back(std::vector<unsigned>{0, 1, 2});
