@@ -171,11 +171,11 @@ Plant Engine::draw(const std::string& s, double angle, double length,
                 turtle.rotate(Mat3f::R(turtle.u, M_PI));
                 break;
             case '$':
-                turtle.l = (Vec3f{{0, 0, 1}} ^ turtle.d).normalized();
+                turtle.l = (UnitVec3f::H ^ turtle.d).normalized();
                 turtle.u = turtle.d ^ turtle.l;
                 break;
             case '%':
-                std::cout << "%";
+                std::cerr << "%" << std::flush;
                 break;
             case '`':
                 turtle.color_index++;
@@ -251,36 +251,42 @@ std::vector<GrammarData> Engine::load_grammars(const std::string& path) const {
     std::vector<GrammarData> gds;
     YAML::Node node = YAML::LoadFile(path);
     for (const auto& g : node["grammars"]) {
-        auto name = g["name"].as<std::string>();
-        auto type = g["type"] ? g["type"].as<std::string>() : "classic";
-        auto axiom = g["axiom"].as<std::string>();
-        BaseGrammar* gram;
-        const auto& rules = g["rules"];
-        if (type == "parametric")
-            gram = parse_parametric_rules(rules, axiom);
-        else
-            gram = parse_classic_rules(rules, axiom);
-        auto angle = g["angle"] ? g["angle"].as<double>() : 30;
-        auto n = g["n"].as<int>();
-        double length = g["length"] ? g["length"].as<double>() : 1;
-        double thickness = g["thickness"] ? g["thickness"].as<double>() : 1;
-        double sph_radius = g["sph_radius"] ? g["sph_radius"].as<double>() : 1;
-        materials mtls{};
-        if (g["colors"]) {
-            for (const auto& c : g["colors"])
-                mtls.push_back(Material::from_rgb(c["name"].as<std::string>(), c["rgb"].as<Vec3f>()));
+        try {
+            auto name = g["name"].as<std::string>();
+            auto type = g["type"] ? g["type"].as<std::string>() : "classic";
+            auto axiom = g["axiom"].as<std::string>();
+            BaseGrammar* gram;
+            const auto& rules = g["rules"];
+            if (type == "parametric")
+                gram = parse_parametric_rules(rules, axiom);
+            else
+                gram = parse_classic_rules(rules, axiom);
+            auto angle = g["angle"] ? g["angle"].as<double>() : 30;
+            auto n = g["n"].as<int>();
+            double length = g["length"] ? g["length"].as<double>() : 1;
+            double thickness = g["thickness"] ? g["thickness"].as<double>() : 1;
+            double sph_radius = g["sph_radius"] ? g["sph_radius"].as<double>() : 1;
+            materials mtls{};
+            if (g["colors"]) {
+                for (const auto& c : g["colors"])
+                    mtls.push_back(Material::from_rgb(c["name"].as<std::string>(), c["rgb"].as<Vec3f>()));
+            } else mtls.push_back(Material::White);
+            Camera c{};
+            if (g["camera"]) {
+                const auto& cam = g["camera"];
+                c = Camera(cam["origin"].as<Vec3f>(), cam["forward"].as<Vec3f>(), cam["up"].as<Vec3f>());
+            }
+            std::optional<Tropism> t = std::nullopt;
+            if (g["tropism"]) {
+                const auto& tropism = g["tropism"];
+                t = Tropism(tropism["T"].as<Vec3f>(), tropism["bend"].as<double>());
+            }
+            gds.emplace_back(name, gram, angle, n, length, thickness, sph_radius, mtls, c, t);
+        } catch (YAML::Exception const& e) {
+            if (g["name"]) std::cerr << g["name"].as<String>() << ": ";
+            else std::cerr << "[unnamed grammar]: ";
+            std::cerr << e.what() << std::endl;
         }
-        Camera c{};
-        if (g["camera"]) {
-            const auto& cam = g["camera"];
-            c = Camera(cam["origin"].as<Vec3f>(), cam["forward"].as<Vec3f>(), cam["up"].as<Vec3f>());
-        }
-        std::optional<Tropism> t = std::nullopt;
-        if (g["tropism"]) {
-            const auto& tropism = g["tropism"];
-            t = Tropism(tropism["T"].as<Vec3f>(), tropism["bend"].as<double>());
-        }
-        gds.emplace_back(name, gram, angle, n, length, thickness, sph_radius, mtls, c, t);
     }
     return gds;
 }
@@ -345,13 +351,17 @@ void Engine::render(std::string const& path) const {
 void Engine::render3D(const std::string& path) const {
     auto gds = load_grammars(path);
     for (const auto& gd : gds) {
-        std::cout << "Generating " << gd.name << "..." << std::flush;
-        Plant p = draw(gd.g->generate(gd.n), gd.angle, gd.length, gd.thickness, gd.sph_radius, gd.t);
-        std::string output = "../output/";
-        output += gd.name + ".";
-        p.save_plant(output + "obj", output + "mtl", gd.mtls);
-        save(p, gd.mtls, gd.cam, output + "yaml");
-        std::cout << " OK!" << std::endl;
+        std::cerr << "Generating " << gd.name << "..." << std::flush;
+        try {
+            Plant p = draw(gd.g->generate(gd.n), gd.angle, gd.length, gd.thickness, gd.sph_radius, gd.t);
+            std::string output = "../output/";
+            output += gd.name + ".";
+            p.save_plant(output + "obj", output + "mtl", gd.mtls);
+            save(p, gd.mtls, gd.cam, output + "yaml");
+            std::cerr << " OK!" << std::endl;
+        } catch (std::runtime_error const& e) {
+            std::cerr << " KO! " << e.what() << std::endl;
+        }
     }
 }
 
