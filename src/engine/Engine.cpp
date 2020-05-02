@@ -54,11 +54,19 @@ lines Engine::draw(const std::string& s, double angle, double length) const {
 }
 
 Leaf Engine::draw_leaf(std::string const& s, unsigned& index,
-                       SeaTurtle& turtle, double angle, double length) const {
-    std::vector<Vec3f> vertices;
+                       std::stack<SeaTurtle>& turtles, double angle, double length) const {
     angle = angle * M_PI / 180;
+    Leaf l(turtles.top().color_index);
+
     while (s[index] != '}') {
+        auto& turtle = turtles.top();
         switch (s[index]) {
+            case '[':
+                turtles.push(turtle);
+                break;
+            case ']':
+                turtles.pop();
+                break;
             case '+':
                 turtle.rotate(Mat3f::R(turtle.u, angle));
                 break;
@@ -84,14 +92,16 @@ Leaf Engine::draw_leaf(std::string const& s, unsigned& index,
                 turtle.color_index++;
                 break;
             case 'f':
-                vertices.push_back(turtle.o);
+                l.add_vertex(turtle.o);
                 turtle.o += turtle.d * length;
+                break;
+            default:
                 break;
         }
         index++;
     }
 
-    return Leaf(vertices, turtle.color_index);
+    return l;
 }
 
 
@@ -172,7 +182,7 @@ Plant Engine::draw(const std::string& s, double angle, double length, double thi
                 turtle.r *= 0.75;
                 break;
             case '{':
-                l = draw_leaf(s, i, turtle, angle, length);
+                l = draw_leaf(s, i, turtles, angle, length);
                 plt.add_leaf(l);
                 break;
             case 'b':

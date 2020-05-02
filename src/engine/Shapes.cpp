@@ -94,6 +94,11 @@ void Mesh::save_obj(std::ofstream& out, unsigned curr_vertices) const {
     }
 }
 
+void Leaf::add_vertex(Vec3f const &v) {
+    vertices.emplace_back(v);
+}
+
+
 Mesh Leaf::to_mesh() const {
     Mesh m;
     unsigned n = vertices.size();
