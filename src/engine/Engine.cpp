@@ -174,7 +174,7 @@ Plant Engine::draw(const std::string& s, double angle, double length, double thi
                 turtle.u = turtle.d ^ turtle.l;
                 break;
             case '%':
-                std::cout << "% not handled yet" << std::endl;
+                std::cout << "%";
                 break;
             case '`':
                 turtle.color_index++;
@@ -336,12 +336,13 @@ void Engine::render(std::string const& path) const {
 void Engine::render3D(const std::string& path) const {
     auto gds = load_grammars(path);
     for (const auto& gd : gds) {
-        std::cout << "Rendering " << gd.name << std::endl;
+        std::cout << "Generating " << gd.name << "..." << std::flush;
         Plant p = draw(gd.g->generate(gd.n), gd.angle, gd.length, gd.thickness, gd.sph_radius);
         std::string output = "../output/";
         output += gd.name + ".";
         p.save_plant(output + "obj", output + "mtl", gd.mtls);
         save(p, gd.mtls, gd.cam, output + "yaml");
+        std::cout << " OK!" << std::endl;
     }
 }
 
