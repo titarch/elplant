@@ -173,14 +173,14 @@ Plant Engine::draw(const std::string& s, double angle, double length, double thi
                 turtle.l = (Vec3f{{0, 0, 1}} ^ turtle.d).normalized();
                 turtle.u = turtle.d ^ turtle.l;
                 break;
-            case'%':
+            case '%':
                 std::cout << "% not handled yet" << std::endl;
                 break;
             case '`':
                 turtle.color_index++;
                 break;
             case '!':
-                turtle.r *= 0.75;
+                turtle.r = get_param(s, i, 0.75 * turtle.r);
                 break;
             case '{':
                 l = draw_leaf(s, i, turtles, angle, length);
@@ -221,26 +221,26 @@ static BaseGrammar* parse_classic_rules(YAML::Node const& rules, std::string con
 }
 
 static BaseGrammar* parse_parametric_rules(YAML::Node const& rules, std::string const& axiom) {
-   auto* gram = new ParamGrammar(axiom);
-   auto map = rules["map"] ? rules["map"].as<dict_t>() : dict_t{};
-   for (YAML::const_iterator it = rules.begin(); it != rules.end(); ++it) {
-       if (it->first.as<String>() == "map") continue;
-       auto c = it->first.as<char>();
-       auto const& rhs = it->second;
-       auto params = rhs["parameters"] ? rhs["parameters"].as<std::vector<char>>() : std::vector<char>{};
-       ParamRule rule{params};
-       for (auto const& cond : rhs["conds"]) {
-           auto param = cond["parameter"] ? cond["parameter"].as<char>() : (params.empty() ? '?': params[0]);
-           auto op = cond["op"] ? cond["op"].as<Op>() : Op::TRUE;
-           auto val = cond["value"] ? cond["value"].as<double>() : 0.0;
-           auto rval = cond["rvalue"].as<std::string>();
-           for (const auto& entry : map)
-               boost::replace_all(rval, entry.first, entry.second);
-           rule.add_conditional_rule(param, op, val, rval);
-       }
-       gram->add_rule(c, rule);
-   }
-   return gram;
+    auto* gram = new ParamGrammar(axiom);
+    auto map = rules["map"] ? rules["map"].as<dict_t>() : dict_t{};
+    for (YAML::const_iterator it = rules.begin(); it != rules.end(); ++it) {
+        if (it->first.as<String>() == "map") continue;
+        auto c = it->first.as<char>();
+        auto const& rhs = it->second;
+        auto params = rhs["parameters"] ? rhs["parameters"].as<std::vector<char>>() : std::vector<char>{};
+        ParamRule rule{params};
+        for (auto const& cond : rhs["conds"]) {
+            auto param = cond["parameter"] ? cond["parameter"].as<char>() : (params.empty() ? '?' : params[0]);
+            auto op = cond["op"] ? cond["op"].as<Op>() : Op::TRUE;
+            auto val = cond["value"] ? cond["value"].as<double>() : 0.0;
+            auto rval = cond["rvalue"].as<std::string>();
+            for (const auto& entry : map)
+                boost::replace_all(rval, entry.first, entry.second);
+            rule.add_conditional_rule(param, op, val, rval);
+        }
+        gram->add_rule(c, rule);
+    }
+    return gram;
 }
 
 std::vector<GrammarData> Engine::load_grammars(const std::string& path) const {
@@ -260,7 +260,7 @@ std::vector<GrammarData> Engine::load_grammars(const std::string& path) const {
         auto n = g["n"].as<int>();
         double length = g["length"] ? g["length"].as<double>() : 1;
         double thickness = g["thickness"] ? g["thickness"].as<double>() : 1;
-        double sph_radius = g["sph_radius"] ? g["sph_radius"].as<double>(): 1;
+        double sph_radius = g["sph_radius"] ? g["sph_radius"].as<double>() : 1;
         materials mtls{};
         if (g["colors"]) {
             for (const auto& c : g["colors"])
