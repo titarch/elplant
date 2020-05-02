@@ -174,7 +174,7 @@ Plant Engine::draw(const std::string& s, double angle, double length,
                 turtle.u = turtle.d ^ turtle.l;
                 break;
             case '%':
-                std::cerr << "%" << std::flush;
+                for (; s[i] != '\0' && s[i] != ']'; ++i);
                 break;
             case '`':
                 turtle.color_index++;
