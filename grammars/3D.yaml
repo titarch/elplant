@@ -152,6 +152,10 @@ grammars:
     axiom: "I(9)a(13)"
     n: 36
     angle: 18
+    camera:
+      origin: [0, 300, 150]
+      forward: [0, -1, 0]
+      up: [1, 0, 0]
     colors:
       - name: green
         rgb: [0.0, 1.0, 0.0]
