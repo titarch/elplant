@@ -276,7 +276,7 @@ grammars:
   capsella:
     type: "parametric"
     axiom: "I(9)a(13)"
-    n: 100
+    n: 36
     angle: 18
     camera:
       origin: [0, 300, 150]
