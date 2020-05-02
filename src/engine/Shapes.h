@@ -2,8 +2,8 @@
 // Created by mattrouss on 4/3/20.
 //
 
-#ifndef ELPLANT_SHAPES_HH
-#define ELPLANT_SHAPES_HH
+#ifndef ELPLANT_SHAPES_H
+#define ELPLANT_SHAPES_H
 
 #include <SFML/Graphics/Vertex.hpp>
 #include <utility>
@@ -78,9 +78,12 @@ struct Leaf {
     std::vector<Vec3f> vertices;
     unsigned color_index;
 
-    Leaf() : color_index{} {}
+    Leaf() : vertices{}, color_index{} {}
+    Leaf(unsigned color_index) : vertices{}, color_index{color_index} {}
 
     Leaf(std::vector<Vec3f> vertices, unsigned color_index) : vertices(std::move(vertices)), color_index(color_index) {}
+
+    void add_vertex(Vec3f const& v);
 
     [[nodiscard]] Mesh to_mesh() const;
     [[nodiscard]] TriangleMesh to_triangles() const;
@@ -118,4 +121,4 @@ using leaves = std::vector<Leaf>;
 using icospheres = std::vector<IcoSphere>;
 
 
-#endif //ELPLANT_SHAPES_HH
+#endif //ELPLANT_SHAPES_H

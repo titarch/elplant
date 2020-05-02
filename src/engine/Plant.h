@@ -2,10 +2,10 @@
 // Created by mattrouss on 4/3/20.
 //
 
-#ifndef ELPLANT_PLANT_HH
-#define ELPLANT_PLANT_HH
+#ifndef ELPLANT_PLANT_H
+#define ELPLANT_PLANT_H
 
-#include "Shapes.hh"
+#include "Shapes.h"
 #include <fstream>
 
 struct Plant {
@@ -25,4 +25,4 @@ struct Plant {
 };
 
 
-#endif //ELPLANT_PLANT_HH
+#endif //ELPLANT_PLANT_H

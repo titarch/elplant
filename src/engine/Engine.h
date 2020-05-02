@@ -14,12 +14,13 @@
 #include "../utils/Vector.h"
 #include "../utils/Matrix.h"
 #include "Material.h"
-#include "Shapes.hh"
-#include "Plant.hh"
+#include "Shapes.h"
+#include "Plant.h"
 
 struct SeaTurtle : public Cylinder {
     Vec3f l, u;
 
+    SeaTurtle() : Cylinder(), l(), u() {}
     SeaTurtle(const Vec3f& o, double r, double h, unsigned color_index) : Cylinder(o, UnitVec3f::H, r, h, color_index),
                                                                           l(UnitVec3f::L), u(UnitVec3f::U) {}
 
@@ -80,7 +81,7 @@ public:
 
     [[nodiscard]] lines draw(std::string const& s, double angle, double length) const;
     [[nodiscard]] Leaf
-    draw_leaf(std::string const& s, unsigned& index, SeaTurtle& turtle, double angle, double length) const;
+    draw_leaf(std::string const& s, unsigned& index, std::stack<SeaTurtle>& turtles, double angle, double length) const;
     [[nodiscard]] Plant
     draw(std::string const& s, double angle, double length, double thickness, double sph_radius) const;
     [[nodiscard]] std::vector<GrammarData> load_grammars(std::string const& path) const;

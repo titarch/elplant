@@ -2,7 +2,7 @@
 // Created by mattrouss on 4/3/20.
 //
 
-#include "Plant.hh"
+#include "Plant.h"
 
 void Plant::add_cylinder(Cylinder &c) {
     cyls.emplace_back(c);
