@@ -84,7 +84,7 @@ public:
 
     ParamRule& add_conditional_rule(char param, Op op, double value, String const& rvalue) {
         auto it = std::find(params_.cbegin(), params_.cend(), param);
-        if (it == params_.cend() && !params_.empty()) throw std::invalid_argument(String("Parameter ") + param + " was not found");
+        if (it == params_.cend() && !params_.empty()) throw std::invalid_argument(String("Parameter `") + param + "' was not found");
         crs_.emplace_back(Condition{op, value}, it - params_.cbegin(), rvalue);
         return *this;
     }

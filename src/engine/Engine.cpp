@@ -236,7 +236,13 @@ static BaseGrammar* parse_parametric_rules(YAML::Node const& rules, std::string 
             auto rval = cond["rvalue"].as<std::string>();
             for (const auto& entry : map)
                 boost::replace_all(rval, entry.first, entry.second);
-            rule.add_conditional_rule(param, op, val, rval);
+            try {
+                rule.add_conditional_rule(param, op, val, rval);
+            } catch (std::invalid_argument const& e) {
+                std::stringstream ss;
+                ss << "Function `" << c << "'" << ": " << e.what();
+                throw YAML::Exception(YAML::Mark::null_mark(), ss.str());
+            }
         }
         gram->add_rule(c, rule);
     }
