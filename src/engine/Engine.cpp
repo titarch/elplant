@@ -208,7 +208,7 @@ Plant Engine::draw(const std::string& s, double angle, double length,
                 break;
             default:
                 if (!isalpha(s[i]))
-                    throw std::invalid_argument("Bad character " + std::to_string(s[i]));
+                    throw std::runtime_error(std::string("Bad character: `") + s[i] + "'");
         }
     }
     return plt;
