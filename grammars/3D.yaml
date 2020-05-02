@@ -146,6 +146,7 @@ grammars:
         a2: 45
         d: 137.5
         wr: 0.707
+
   - name: "womping_willow"
     type: "parametric"
     axiom: "!(1)F(200)/(45)A"
@@ -153,6 +154,10 @@ grammars:
     colors:
       - name: green
         rgb: [0.0, 1.0, 0.0]
+    camera:
+      origin: [0, 700, 400]
+      forward: [0, -1, 0]
+      up: [1, 0, 0]
     rules:
       A:
         conds:
