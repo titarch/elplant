@@ -4,7 +4,7 @@
 
 #include <fstream>
 #include <iostream>
-#include "Shapes.hh"
+#include "Shapes.h"
 
 void normalize(lines& ls, float width, float height, float stickiness) {
     float xmin = INFINITY, xmax = 0, ymin = INFINITY, ymax = 0;

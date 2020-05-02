@@ -2,8 +2,8 @@
 // Created by mattrouss on 4/3/20.
 //
 
-#ifndef ELPLANT_SHAPES_HH
-#define ELPLANT_SHAPES_HH
+#ifndef ELPLANT_SHAPES_H
+#define ELPLANT_SHAPES_H
 
 #include <SFML/Graphics/Vertex.hpp>
 #include <utility>
@@ -121,4 +121,4 @@ using leaves = std::vector<Leaf>;
 using icospheres = std::vector<IcoSphere>;
 
 
-#endif //ELPLANT_SHAPES_HH
+#endif //ELPLANT_SHAPES_H

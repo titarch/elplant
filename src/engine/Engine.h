@@ -14,8 +14,8 @@
 #include "../utils/Vector.h"
 #include "../utils/Matrix.h"
 #include "Material.h"
-#include "Shapes.hh"
-#include "Plant.hh"
+#include "Shapes.h"
+#include "Plant.h"
 
 struct SeaTurtle : public Cylinder {
     Vec3f l, u;
