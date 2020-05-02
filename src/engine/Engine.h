@@ -91,5 +91,4 @@ protected:
     unsigned width_, height_;
 };
 
-
 #endif //ELPLANT_ENGINE_H
