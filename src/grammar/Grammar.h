@@ -17,7 +17,7 @@
 
 using String = std::string;
 using Strings = std::vector<String>;
-
+using dict_t = std::map<String, String>;
 
 class BaseGrammar {
 public:
@@ -119,5 +119,17 @@ private:
 
 double evaluate(String const& s);
 std::vector<double> evaluate(Strings const& exps);
+
+namespace YAML {
+    template<>
+    struct convert<dict_t> {
+        static bool decode(Node const& node, dict_t& rhs) {
+            if (!node.IsMap()) return false;
+            for (YAML::const_iterator it = node.begin(); it != node.end(); ++it)
+                rhs.insert({it->first.as<String>(), it->second.as<String>()});
+            return true;
+        }
+    };
+}
 
 #endif //ELPLANT_GRAMMAR_H

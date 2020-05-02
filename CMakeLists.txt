@@ -10,6 +10,7 @@ set(CMAKE_CXX_FLAGS_DEBUG    "-g  -Wall -Wextra -Werror -pedantic")
 
 find_package(SFML 2.5 COMPONENTS graphics REQUIRED)
 find_package(YAML-CPP REQUIRED)
+find_package(Boost REQUIRED)
 
 add_subdirectory(src)
 

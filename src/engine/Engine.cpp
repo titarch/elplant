@@ -7,6 +7,7 @@
 #include <cmath>
 #include <iostream>
 #include <yaml-cpp/yaml.h>
+#include <boost/algorithm/string/replace.hpp>
 #include "Engine.h"
 
 static Vec2f angle_dir(double t) {
@@ -221,7 +222,9 @@ static BaseGrammar* parse_classic_rules(YAML::Node const& rules, std::string con
 
 static BaseGrammar* parse_parametric_rules(YAML::Node const& rules, std::string const& axiom) {
    auto* gram = new ParamGrammar(axiom);
+   auto map = rules["map"] ? rules["map"].as<dict_t>() : dict_t{};
    for (YAML::const_iterator it = rules.begin(); it != rules.end(); ++it) {
+       if (it->first.as<String>() == "map") continue;
        auto c = it->first.as<char>();
        auto const& rhs = it->second;
        auto params = rhs["parameters"] ? rhs["parameters"].as<std::vector<char>>() : std::vector<char>{};
@@ -231,6 +234,8 @@ static BaseGrammar* parse_parametric_rules(YAML::Node const& rules, std::string 
            auto op = cond["op"] ? cond["op"].as<Op>() : Op::TRUE;
            auto val = cond["value"] ? cond["value"].as<double>() : 0.0;
            auto rval = cond["rvalue"].as<std::string>();
+           for (const auto& entry : map)
+               boost::replace_all(rval, entry.first, entry.second);
            rule.add_conditional_rule(param, op, val, rval);
        }
        gram->add_rule(c, rule);
