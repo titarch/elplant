@@ -142,11 +142,36 @@ grammars:
         a2: 45
         d: 137.5
         wr: 0.707
+  - name: "womping_willow"
+    type: "parametric"
+    axiom: "!(1)F(200)/(45)A"
+    n: 6
+    colors:
+      - name: green
+        rgb: [0.0, 1.0, 0.0]
+    rules:
+      A:
+        conds:
+          - rvalue: "!(vr)F(50)[&(a)F(50)A]/(d1)[&(a)F(50)A]/(d2)[&(a)F(50)A]"
+      B:
+        parameters: ['l']
+        conds:
+          - rvalue: "F(l*lr)"
+      "!":
+        parameters: ['w']
+        conds:
+          - rvalue: "!(w*vr)"
+      map:
+        d1: 94.74
+        d2: 132.63
+        a: 18.95
+        lr: 1.109
+        vr: 1.732
 
   - name: "capsella"
     type: "parametric"
     axiom: "I(9)a(13)"
-    n: 36
+    n: 100
     angle: 18
     colors:
       - name: green
