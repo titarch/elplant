@@ -119,9 +119,13 @@ grammars:
     type: "parametric"
     axiom: "A(10, 1)"
     n: 10
+    camera:
+      origin: [0, 50, 30]
+      forward: [0, -1, 0]
+      up: [1, 0, 0]
     colors:
-      - name: green
-        rgb: [0.0, 1.0, 0.0]
+      - name: brown
+        rgb: [0.38, 0.24, 0.16]
     rules:
       A:
         parameters: ['l', 'w']
@@ -173,6 +177,10 @@ grammars:
     axiom: "I(9)a(13)"
     n: 100
     angle: 18
+    camera:
+      origin: [0, 300, 150]
+      forward: [0, -1, 0]
+      up: [1, 0, 0]
     colors:
       - name: green
         rgb: [0.0, 1.0, 0.0]
