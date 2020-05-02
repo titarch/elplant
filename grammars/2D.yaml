@@ -1,5 +1,5 @@
 grammars:
-  - name: "Dragon"
+  Dragon:
     axiom: "FX"
     rules:
       Y: "-FX-Y"
@@ -7,14 +7,14 @@ grammars:
     angle: 90
     n: 10
 
-  - name: "Snowflake"
+  Snowflake:
     axiom: "F++F++F"
     rules:
       F: "F-F++F-F"
     angle: 60
     n: 3
 
-  - name: "Sierpinski"
+  Sierpinski:
     axiom: "R"
     rules:
       L: "R+L+R"
@@ -22,7 +22,7 @@ grammars:
     angle: 60
     n: 6
 
-  - name: "Islands & Lakes"
+  Islands & Lakes:
     axiom: "F+F+F+F"
     rules:
       F: "F+f-FF+F+FF+Ff+FF-f+FF-F-FF-Ff-FFF"
@@ -30,21 +30,21 @@ grammars:
     angle: 90
     n: 2
 
-  - name: "Ivy"
+  Ivy:
     axiom: "F"
     rules:
       F: "F[+F]F[-F]F"
     angle: 25.7
     n: 5
 
-  - name: "Willow"
+  Willow:
     axiom: "F"
     rules:
       F: "FF-[-F+F+F]+[+F-F-F]"
     angle: 22.5
     n: 4
 
-  - name: "Lotus"
+  Lotus:
     axiom: "X"
     rules:
       X: "F[+X]F[-X]+X"
@@ -52,7 +52,7 @@ grammars:
     angle: 20
     n: 7
 
-  - name: "Maple Leaf"
+  Maple Leaf:
     axiom: "X"
     rules:
       X: "F[+X][-X]FX"
@@ -60,7 +60,7 @@ grammars:
     angle: 50
     n: 7
 
-  - name: "Stochastic"
+  Stochastic:
     axiom: "X"
     rules:
       F: "FF"

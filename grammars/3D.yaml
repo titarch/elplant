@@ -1,5 +1,5 @@
 grammars:
-  - name: "daffodil"
+  daffodil:
     type: "classic"
     axiom: "P"
     rules:
@@ -27,7 +27,7 @@ grammars:
         rgb: [1.0, 0.0, 1.0]
       - name: yellow
         rgb: [1.0, 1.0, 0.0]
-  - name: "leaf"
+  leaf:
     type: "classic"
     axiom: "L"
     rules:
@@ -41,7 +41,7 @@ grammars:
       - name: green
         rgb: [0.0, 1.0, 0.0]
 
-  - name: "hilbert"
+  hilbert:
     type: "classic"
     axiom: "A"
     rules:
@@ -63,7 +63,7 @@ grammars:
       - name: yellow
         rgb: [1.0, 1.0, 0.0]
 
-  - name: "bush"
+  bush:
     type: "classic"
     axiom: "A"
     rules:
@@ -84,7 +84,7 @@ grammars:
       - name: red
         rgb: [0.8, 0.02, 0.0]
 
-  - name: "sphere"
+  sphere:
     type: "classic"
     axiom: "A"
     rules:
@@ -98,12 +98,12 @@ grammars:
       - name: green
         rgb: [0.0, 0.137, 0.0]
 
-#  - name: "invalid_grammar_1"
+#  invalid_grammar_1:
 #    axiom: "x"
 #    rules:
 #      x: "xF"
 #
-#  - name: "invalid_grammar_2"
+#  invalid_grammar_2:
 #    type: "parametric"
 #    n: 20
 #    axiom: "a(10)"
@@ -114,7 +114,7 @@ grammars:
 #          - op: "gt"
 #            rvalue: "a(t-1,5)"
 
-  - name: "spiral_tree"
+  spiral_tree:
     type: "parametric"
     axiom: "A(10,1)"
     camera:
@@ -141,7 +141,7 @@ grammars:
         a2: 35
         wr: 0.707
 
-  - name: "christmas_spiral_tree"
+  christmas_spiral_tree:
     type: "parametric"
     axiom: "A(10,1,11)"
     n: 11
@@ -175,7 +175,7 @@ grammars:
       - name: green
         rgb: [0.0, 1.0, 0.0]
 
-  - name: "dead_tree"
+  dead_tree:
     type: "parametric"
     axiom: "A(10, 1)"
     n: 10
@@ -206,7 +206,8 @@ grammars:
         a2: 45
         d: 137.5
         wr: 0.707
-  - name: "weeping_willow"
+
+  weeping_willow:
     type: "parametric"
     axiom: "!(1)F(200)/(45)A"
     n: 6
@@ -239,7 +240,7 @@ grammars:
         lr: 1.790
         vr: 1.5
 
-  - name: "womping_willow"
+  womping_willow:
     type: "parametric"
     axiom: "!(1)F(200)/(45)A"
     n: 6
@@ -272,7 +273,7 @@ grammars:
         lr: 1.070
         vr: 1.5
 
-  - name: "capsella"
+  capsella:
     type: "parametric"
     axiom: "I(9)a(13)"
     n: 100

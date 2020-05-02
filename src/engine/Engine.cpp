@@ -106,7 +106,6 @@ Leaf Engine::draw_leaf(std::string const& s, unsigned& index,
 }
 
 
-
 double get_param(std::string const& s, unsigned& i, double def) {
     if (s[i + 1] != '(') return def;
     std::string exp;
@@ -125,7 +124,7 @@ double get_length(std::string const& s, unsigned& i, double default_length) {
 }
 
 Plant Engine::draw(const std::string& s, double angle, double length,
-        double thickness, double sph_radius, std::optional<Tropism> const& t) const {
+                   double thickness, double sph_radius, std::optional<Tropism> const& t) const {
     double real_angle = angle;
     double real_length = length;
     Plant plt;
@@ -256,9 +255,11 @@ static BaseGrammar* parse_parametric_rules(YAML::Node const& rules, std::string 
 std::vector<GrammarData> Engine::load_grammars(const std::string& path) const {
     std::vector<GrammarData> gds;
     YAML::Node node = YAML::LoadFile(path);
-    for (const auto& g : node["grammars"]) {
+    auto gs = node["grammars"];
+    for (YAML::const_iterator git = gs.begin(); git != gs.end(); ++git) {
+        auto name = git->first.as<std::string>();
+        auto g = git->second;
         try {
-            auto name = g["name"].as<std::string>();
             auto type = g["type"] ? g["type"].as<std::string>() : "classic";
             auto axiom = g["axiom"].as<std::string>();
             BaseGrammar* gram;
@@ -289,9 +290,7 @@ std::vector<GrammarData> Engine::load_grammars(const std::string& path) const {
             }
             gds.emplace_back(name, gram, angle, n, length, thickness, sph_radius, mtls, c, t);
         } catch (YAML::Exception const& e) {
-            if (g["name"]) std::cerr << g["name"].as<String>() << ": ";
-            else std::cerr << "[unnamed grammar]: ";
-            std::cerr << e.what() << std::endl;
+            std::cerr << name << ": " << e.what() << std::endl;
         }
     }
     return gds;
