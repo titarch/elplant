@@ -153,16 +153,22 @@ grammars:
       A:
         parameters: ['l', 'w', 't']
         conds:
-          - rvalue: "!(w)F(l)[&(10)B(l*0.9,w*0.707,t-1)]/(180)[&(60)B(l*0.7,w*0.707,t-1)]"
+          - rvalue: "!(w)F(l)[&(a1)B(l*r1,w*wr,t-1)]/(180)[&(a2)B(l*r2,w*wr,t-1)]"
       B:
         parameters: ['l', 'w', 't']
         conds:
           - parameter: 't'
             op: 'gt'
-            rvalue: "!(w)F(l)[+(10)$B(l*0.9,w*0.707,t-1)][-(60)$B(l*0.7,w*0.707,t-1)]"
+            rvalue: "!(w)F(l)[+(a1)$B(l*r1,w*wr,t-1)][-(60)$B(l*r2,w*wr,t-1)]"
           - parameter: 't'
             op: 'eq'
             rvalue: "[`b]"
+      map:
+        r1: 0.9
+        r2: 0.7
+        a1: 10
+        a2: 60
+        wr: 0.707
     colors:
       - name: brown
         rgb: [0.38, 0.24, 0.16]
