@@ -117,6 +117,10 @@ grammars:
   - name: "spiral_tree"
     type: "parametric"
     axiom: "A(10,1)"
+    camera:
+      origin: [0, 60, 30]
+      forward: [0, -1, 0]
+      up: [1, 0, 0]
     n: 10
     colors:
       - name: green
