@@ -54,8 +54,28 @@ lines Engine::draw(const std::string& s, double angle, double length) const {
     return lines;
 }
 
+double get_param(std::string const& s, unsigned& i, double def) {
+    if (s[i + 1] != '(') return def;
+    std::string exp;
+    i += 2;
+    for (; s[i] != ',' && s[i] != ')'; ++i)
+        exp.push_back(s[i]);
+    for(; s[i] != ')'; ++i);
+    return evaluate(exp);
+}
+
+double get_angle(std::string const& s, unsigned& i, double default_angle) {
+    return get_param(s, i, default_angle) * M_PI / 180;
+}
+
+double get_length(std::string const& s, unsigned& i, double default_length) {
+    return get_param(s, i, default_length);
+}
+
+
 Leaf Engine::draw_leaf(std::string const& s, unsigned& index,
                        std::stack<SeaTurtle>& turtles, double angle, double length) const {
+    double real_length = length;
     angle = angle * M_PI / 180;
     Leaf l(turtles.top().color_index);
 
@@ -92,6 +112,13 @@ Leaf Engine::draw_leaf(std::string const& s, unsigned& index,
             case '`':
                 turtle.color_index++;
                 break;
+            case '.':
+                l.add_vertex(turtle.o);
+                break;
+            case 'G':
+                real_length = get_param(s, index, length);
+                turtle.o += turtle.d * real_length;
+                break;
             case 'f':
                 l.add_vertex(turtle.o);
                 turtle.o += turtle.d * length;
@@ -105,23 +132,6 @@ Leaf Engine::draw_leaf(std::string const& s, unsigned& index,
     return l;
 }
 
-
-double get_param(std::string const& s, unsigned& i, double def) {
-    if (s[i + 1] != '(') return def;
-    std::string exp;
-    i += 2;
-    for (; s[i] != ')'; ++i)
-        exp.push_back(s[i]);
-    return evaluate(exp);
-}
-
-double get_angle(std::string const& s, unsigned& i, double default_angle) {
-    return get_param(s, i, default_angle) * M_PI / 180;
-}
-
-double get_length(std::string const& s, unsigned& i, double default_length) {
-    return get_param(s, i, default_length);
-}
 
 Plant Engine::draw(const std::string& s, double angle, double length,
                    double thickness, double sph_radius, std::optional<Tropism> const& t) const {

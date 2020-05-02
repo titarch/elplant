@@ -29,17 +29,51 @@ grammars:
         rgb: [1.0, 1.0, 0.0]
   leaf:
     type: "classic"
-    axiom: "L"
+    axiom: "[A][B]"
     rules:
-      L: "{-fX+X+fX-|-fX+X+fX}"
-      X: "FX"
+      A: "[+A{.].C.}"
+      B: "[-B{.].C.}"
+      C: "GC"
     angle: 18
     length: 5
     thickness: 1
-    n: 5
+    n: 10
     colors:
       - name: green
         rgb: [0.0, 1.0, 0.0]
+
+  param_leaf:
+    type: "parametric"
+    angle: 60
+    n: 20
+    colors:
+      - name: green
+        rgb: [0.0, 1.0, 0.0]
+    axiom: "{.A(0)}"
+    rules:
+      A:
+        parameters: ['t']
+        conds:
+          - rvalue: "G(LA,RA)[-B(t).][A(t+1)][+B(t).]"
+      B:
+        parameters: ['t']
+        conds:
+          - parameter: 't'
+            op: 'gt'
+            rvalue: "G(LB,RB)B(t-PD)"
+          - parameter: 't'
+            op: 'eq'
+            rvalue: ""
+      G:
+        parameters: ['s', 'r']
+        conds:
+          - rvalue: "G(s*r,r)"
+      map:
+        LA: 5
+        RA: 1.2
+        LB: 10.0
+        RB: 1
+        PD: 0.5
 
   hilbert:
     type: "classic"
