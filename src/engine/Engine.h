@@ -78,7 +78,7 @@ struct Camera {
 
 struct GrammarData {
     std::string name;
-    BaseGrammar* g;
+    grammar_ptr g;
     double angle;
     int n;
     double length, thickness, sph_radius;
@@ -86,9 +86,9 @@ struct GrammarData {
     Camera cam;
     std::optional<Tropism> t;
 
-    GrammarData(std::string name, BaseGrammar* g, double angle, int n, double length, double thickness,
+    GrammarData(std::string name, grammar_ptr g, double angle, int n, double length, double thickness,
                 double sph_radius, materials mtls, const Camera& cam, std::optional<Tropism> const& t)
-            : name(std::move(name)), g(g), angle(angle), n(n), length(length), thickness(thickness),
+            : name(std::move(name)), g(std::move(g)), angle(angle), n(n), length(length), thickness(thickness),
               sph_radius(sph_radius), mtls(std::move(mtls)), cam(cam), t(t){}
 };
 

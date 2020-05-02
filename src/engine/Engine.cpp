@@ -213,8 +213,8 @@ Plant Engine::draw(const std::string& s, double angle, double length,
     return plt;
 }
 
-static BaseGrammar* parse_classic_rules(YAML::Node const& rules, std::string const& axiom) {
-    auto* gram = new Grammar(axiom);
+static grammar_ptr parse_classic_rules(YAML::Node const& rules, std::string const& axiom) {
+    auto gram = std::make_unique<Grammar>(axiom);
     for (YAML::const_iterator it = rules.begin(); it != rules.end(); ++it) {
         auto lhs = it->first.as<char>();
         auto rhs = it->second.as<std::string>();
@@ -223,8 +223,8 @@ static BaseGrammar* parse_classic_rules(YAML::Node const& rules, std::string con
     return gram;
 }
 
-static BaseGrammar* parse_parametric_rules(YAML::Node const& rules, std::string const& axiom) {
-    auto* gram = new ParamGrammar(axiom);
+static grammar_ptr parse_parametric_rules(YAML::Node const& rules, std::string const& axiom) {
+    auto gram = std::make_unique<ParamGrammar>(axiom);
     auto map = rules["map"] ? rules["map"].as<dict_t>() : dict_t{};
     for (YAML::const_iterator it = rules.begin(); it != rules.end(); ++it) {
         if (it->first.as<String>() == "map") continue;
@@ -262,7 +262,7 @@ std::vector<GrammarData> Engine::load_grammars(const std::string& path) const {
         try {
             auto type = g["type"] ? g["type"].as<std::string>() : "classic";
             auto axiom = g["axiom"].as<std::string>();
-            BaseGrammar* gram;
+            grammar_ptr gram;
             const auto& rules = g["rules"];
             if (type == "parametric")
                 gram = parse_parametric_rules(rules, axiom);
@@ -288,7 +288,7 @@ std::vector<GrammarData> Engine::load_grammars(const std::string& path) const {
                 const auto& tropism = g["tropism"];
                 t = Tropism(tropism["T"].as<Vec3f>(), tropism["bend"].as<double>());
             }
-            gds.emplace_back(name, gram, angle, n, length, thickness, sph_radius, mtls, c, t);
+            gds.emplace_back(name, std::move(gram), angle, n, length, thickness, sph_radius, mtls, c, t);
         } catch (YAML::Exception const& e) {
             std::cerr << name << ": " << e.what() << std::endl;
         }
@@ -301,7 +301,7 @@ void Engine::render(std::string const& path) const {
     if (gds.empty())
         throw std::invalid_argument("No grammar found in Yaml file");
     auto gidx = 0u;
-    auto gd = gds[gidx];
+    GrammarData& gd = gds[gidx];
 
     auto lines = draw(gd.g->generate(gd.n), gd.angle, 1);
     normalize(lines, (float) width_, (float) height_, 0.9);

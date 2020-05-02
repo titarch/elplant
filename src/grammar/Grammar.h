@@ -11,6 +11,7 @@
 #include <vector>
 #include <map>
 #include <utility>
+#include <memory>
 #include <random>
 #include "exprtk.hpp"
 #include "conditional.h"
@@ -25,6 +26,7 @@ public:
     [[nodiscard]] virtual String generate(int n) const = 0;
 };
 
+using grammar_ptr = std::shared_ptr<BaseGrammar>;
 
 class Rule {
 public:
