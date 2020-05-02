@@ -17,6 +17,15 @@
 #include "Shapes.h"
 #include "Plant.h"
 
+struct Tropism {
+    Vec3f T;
+    double bend;
+
+    Tropism(): T(), bend() {}
+    Tropism(Vec3f const& T, double bend) : T(T), bend(bend) {}
+};
+
+
 struct SeaTurtle : public Cylinder {
     Vec3f l, u;
 
@@ -28,6 +37,13 @@ struct SeaTurtle : public Cylinder {
         d = r * d;
         u = r * u;
         l = r * l;
+    }
+
+    void bend(Tropism const& t) {
+        auto axis = d ^ t.T;
+        auto alpha = t.bend * axis.sqrMagnitude();
+
+        rotate(Mat3f::R(axis, alpha));
     }
 };
 
@@ -68,11 +84,12 @@ struct GrammarData {
     double length, thickness, sph_radius;
     materials mtls;
     Camera cam;
+    std::optional<Tropism> t;
 
     GrammarData(std::string name, BaseGrammar* g, double angle, int n, double length, double thickness,
-                double sph_radius, materials mtls, const Camera& cam)
+                double sph_radius, materials mtls, const Camera& cam, std::optional<Tropism> const& t)
             : name(std::move(name)), g(g), angle(angle), n(n), length(length), thickness(thickness),
-              sph_radius(sph_radius), mtls(std::move(mtls)), cam(cam) {}
+              sph_radius(sph_radius), mtls(std::move(mtls)), cam(cam), t(t){}
 };
 
 class Engine {
@@ -83,7 +100,7 @@ public:
     [[nodiscard]] Leaf
     draw_leaf(std::string const& s, unsigned& index, std::stack<SeaTurtle>& turtles, double angle, double length) const;
     [[nodiscard]] Plant
-    draw(std::string const& s, double angle, double length, double thickness, double sph_radius) const;
+    draw(std::string const& s, double angle, double length, double thickness, double sph_radius, std::optional<Tropism> const& t) const;
     [[nodiscard]] std::vector<GrammarData> load_grammars(std::string const& path) const;
     void render(std::string const& path) const;
     void render3D(std::string const& path) const;

@@ -124,7 +124,8 @@ double get_length(std::string const& s, unsigned& i, double default_length) {
     return get_param(s, i, default_length);
 }
 
-Plant Engine::draw(const std::string& s, double angle, double length, double thickness, double sph_radius) const {
+Plant Engine::draw(const std::string& s, double angle, double length,
+        double thickness, double sph_radius, std::optional<Tropism> const& t) const {
     double real_angle = angle;
     double real_length = length;
     Plant plt;
@@ -198,6 +199,9 @@ Plant Engine::draw(const std::string& s, double angle, double length, double thi
                 [[fallthrough]];
             case 'f':
                 turtle.o += turtle.d * real_length;
+                if (t.has_value()) {
+                    turtle.bend(t.value());
+                }
                 break;
             case '(':
                 for (; s[i] != ')'; ++i);
@@ -278,7 +282,12 @@ std::vector<GrammarData> Engine::load_grammars(const std::string& path) const {
                 const auto& cam = g["camera"];
                 c = Camera(cam["origin"].as<Vec3f>(), cam["forward"].as<Vec3f>(), cam["up"].as<Vec3f>());
             }
-            gds.emplace_back(name, gram, angle, n, length, thickness, sph_radius, mtls, c);
+            std::optional<Tropism> t = std::nullopt;
+            if (g["tropism"]) {
+                const auto& tropism = g["tropism"];
+                t = Tropism(tropism["T"].as<Vec3f>(), tropism["bend"].as<double>());
+            }
+            gds.emplace_back(name, gram, angle, n, length, thickness, sph_radius, mtls, c, t);
         } catch (YAML::Exception const& e) {
             if (g["name"]) std::cerr << g["name"].as<String>() << ": ";
             else std::cerr << "[unnamed grammar]: ";
@@ -350,7 +359,7 @@ void Engine::render3D(const std::string& path) const {
     for (const auto& gd : gds) {
         std::cerr << "Generating " << gd.name << "..." << std::flush;
         try {
-            Plant p = draw(gd.g->generate(gd.n), gd.angle, gd.length, gd.thickness, gd.sph_radius);
+            Plant p = draw(gd.g->generate(gd.n), gd.angle, gd.length, gd.thickness, gd.sph_radius, gd.t);
             std::string output = "../output/";
             output += gd.name + ".";
             p.save_plant(output + "obj", output + "mtl", gd.mtls);

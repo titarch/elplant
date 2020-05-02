@@ -117,19 +117,25 @@ grammars:
   - name: "spiral_tree"
     type: "parametric"
     axiom: "A(10,1)"
-    rules:
-      A:
-        parameters: ['l', 'w']
-        conds:
-          - rvalue: "!(w)F(l)[&(10)B(l*0.9,w*0.707)]/(180)[&(60)B(l*0.7,w*0.707)]"
-      B:
-        parameters: ['l', 'w']
-        conds:
-          - rvalue: "!(w)F(l)[+(10)$B(l*0.9,w*0.707)][-(60)$B(l*0.7,w*0.707)]"
     n: 10
     colors:
       - name: green
         rgb: [0.0, 1.0, 0.0]
+    rules:
+      A:
+        parameters: ['l', 'w']
+        conds:
+          - rvalue: "!(w)F(l)[&(a1)B(l*r1,w*wr)]/(180)[&(a2)B(l*r2,w*wr)]"
+      B:
+        parameters: ['l', 'w']
+        conds:
+          - rvalue: "!(w)F(l)[+(a1)$B(l*r1,w*wr)][-(60)$B(l*r2,w*wr)]"
+      map:
+        r1: 0.9
+        r2: 0.8
+        a1: 35
+        a2: 35
+        wr: 0.707
 
   - name: "christmas_spiral_tree"
     type: "parametric"
@@ -190,8 +196,7 @@ grammars:
         a2: 45
         d: 137.5
         wr: 0.707
-
-  - name: "womping_willow"
+  - name: "weeping_willow"
     type: "parametric"
     axiom: "!(1)F(200)/(45)A"
     n: 6
@@ -202,6 +207,9 @@ grammars:
       origin: [0, 700, 400]
       forward: [0, -1, 0]
       up: [1, 0, 0]
+    tropism:
+      T: [-0.02, 0.0, -1.0]
+      bend: 0.27
     rules:
       A:
         conds:
@@ -215,11 +223,44 @@ grammars:
         conds:
           - rvalue: "!(w*vr)"
       map:
-        d1: 94.74
-        d2: 132.63
-        a: 18.95
-        lr: 1.109
-        vr: 1.732
+        d1: 112.5
+        d2: 157.50
+        a: 22.50
+        lr: 1.790
+        vr: 1.5
+
+  - name: "womping_willow"
+    type: "parametric"
+    axiom: "!(1)F(200)/(45)A"
+    n: 6
+    colors:
+      - name: green
+        rgb: [0.0, 1.0, 0.0]
+    camera:
+      origin: [0, 700, 400]
+      forward: [0, -1, 0]
+      up: [1, 0, 0]
+    tropism:
+      T: [-0.61, 0.77, -0.19]
+      bend: 0.40
+    rules:
+      A:
+        conds:
+          - rvalue: "!(vr)F(50)[&(a)F(50)A]/(d1)[&(a)F(50)A]/(d2)[&(a)F(50)A]"
+      B:
+        parameters: ['l']
+        conds:
+          - rvalue: "F(l*lr)"
+      "!":
+        parameters: ['w']
+        conds:
+          - rvalue: "!(w*vr)"
+      map:
+        d1: 180.00
+        d2: 252.00
+        a: 36.00
+        lr: 1.070
+        vr: 1.5
 
   - name: "capsella"
     type: "parametric"
