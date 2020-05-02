@@ -64,7 +64,10 @@ namespace YAML {
                 rhs = Op::NE;
             else if (opstr == "true")
                 rhs = Op::TRUE;
-            else return false; // Wrong op type
+            else {
+                std::cerr << opstr << ": wrong op type; " << std::flush;
+                return false;
+            }
             return true;
         }
     };

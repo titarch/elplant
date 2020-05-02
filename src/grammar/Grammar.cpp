@@ -78,14 +78,19 @@ String ParamRule::evaluate(std::vector<double> const& values_) const {
         if (c.evaluate(values_[c.lpos]))
             return substitute(c.rvalue, values_);
     }
-    throw std::runtime_error("No condition matched...");
+    std::stringstream ss;
+    ss << "Rule mismatch";
+    for(auto i = 0u; i < params_.size(); ++i)
+        ss << ", " << params_[i] << " = " << values_[i];
+    throw std::runtime_error(ss.str());
 }
 
 String ParamGrammar::generate_rec(String const& in, int cur_rec, int max_rec) const {
     String out{};
     for (auto c = in.cbegin(); c != in.cend();) {
         if (rules_.contains(*c)) {
-            auto const& rule = rules_.at(*c);
+            auto const& rule_c = *c;
+            auto const& rule = rules_.at(rule_c);
             ++c;
             Strings exps;
             if (c != in.cend() && *c == '(') {
@@ -103,7 +108,11 @@ String ParamGrammar::generate_rec(String const& in, int cur_rec, int max_rec) co
                 ++c;
             }
             std::vector<double> value = evaluate(exps);
-            out += rule.evaluate(value);
+            try { out += rule.evaluate(value); } catch (std::runtime_error const& e) {
+                std::stringstream ss;
+                ss << "Function " << rule_c << ": " << e.what() << "; rec_n = " << cur_rec << " (maybe try to set n lower than this value)";
+                throw std::runtime_error(ss.str());
+            }
         } else {
             out.push_back(*c);
             ++c;
@@ -117,7 +126,7 @@ double evaluate(String const& s) {
     static exprtk::expression<double> expr;
     static exprtk::parser<double> parser;
     if (!parser.compile(s, expr))
-        throw std::runtime_error(s + ": parsing error");
+        throw std::runtime_error(s + ": could not evaluate expression (maybe some parameters where not declared and could not be substituted)");
     return expr.value();
 }
 

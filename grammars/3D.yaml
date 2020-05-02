@@ -98,6 +98,23 @@ grammars:
       - name: green
         rgb: [0.0, 0.137, 0.0]
 
+  - name: "invalid_grammar_1"
+    axiom: "x"
+    rules:
+      x: "xF"
+
+  - name: "invalid_grammar_2"
+    type: "parametric"
+    n: 20
+    axiom: "a(10)"
+    rules:
+      a:
+        parameters: ['t']
+        conds:
+          - op: "gt"
+            rvalue: "a(t-1,5)"
+
+
   - name: "spiral_tree"
     type: "parametric"
     axiom: "A(10,1)"
