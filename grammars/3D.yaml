@@ -114,7 +114,6 @@ grammars:
           - op: "gt"
             rvalue: "a(t-1,5)"
 
-
   - name: "spiral_tree"
     type: "parametric"
     axiom: "A(10,1)"
@@ -129,6 +128,34 @@ grammars:
           - rvalue: "!(w)F(l)[+(10)$B(l*0.9,w*0.707)][-(60)$B(l*0.7,w*0.707)]"
     n: 10
     colors:
+      - name: green
+        rgb: [0.0, 1.0, 0.0]
+
+  - name: "christmas_spiral_tree"
+    type: "parametric"
+    axiom: "A(10,1,11)"
+    n: 11
+    camera:
+      origin: [0, 60, 30]
+      forward: [0, -1, 0]
+      up: [1, 0, 0]
+    rules:
+      A:
+        parameters: ['l', 'w', 't']
+        conds:
+          - rvalue: "!(w)F(l)[&(10)B(l*0.9,w*0.707,t-1)]/(180)[&(60)B(l*0.7,w*0.707,t-1)]"
+      B:
+        parameters: ['l', 'w', 't']
+        conds:
+          - parameter: 't'
+            op: 'gt'
+            rvalue: "!(w)F(l)[+(10)$B(l*0.9,w*0.707,t-1)][-(60)$B(l*0.7,w*0.707,t-1)]"
+          - parameter: 't'
+            op: 'eq'
+            rvalue: "[`b]"
+    colors:
+      - name: brown
+        rgb: [0.38, 0.24, 0.16]
       - name: green
         rgb: [0.0, 1.0, 0.0]
 
