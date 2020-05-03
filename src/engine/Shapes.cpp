@@ -94,7 +94,7 @@ void Mesh::save_obj(std::ofstream& out, unsigned curr_vertices) const {
     }
 }
 
-void Leaf::add_vertex(Vec3f const &v) {
+void Leaf::add_vertex(Vec3f const& v) {
     vertices.emplace_back(v);
 }
 
@@ -142,12 +142,11 @@ Mesh IcoSphere::to_mesh() const {
     m.vertices[0] = Vec3f{{0, 0, radius}};
 
     // Compute 10 vertices at 1st and 2nd rows
-    for(int i = 1; i <= 5; ++i)
-    {
+    for (int i = 1; i <= 5; ++i) {
         i1 = i;         // index for 1st row
         i2 = i + 5;   // index for 2nd row
 
-        z  = radius * sinf(elevation);
+        z = radius * sinf(elevation);
         xy = radius * cosf(elevation);
         m.vertices[i1] = Vec3f{{xy * cosf(hAngle1), xy * sinf(hAngle1), z}};
         m.vertices[i2] = Vec3f{{xy * cosf(hAngle2), xy * sinf(hAngle2), -z}};
@@ -166,26 +165,31 @@ Mesh IcoSphere::to_mesh() const {
     }
 
     // Add 20 triangles
-    m.faces.emplace_back(std::vector<unsigned>{0, 1, 2});
-    m.faces.emplace_back(std::vector<unsigned>{0, 2, 3});
-    m.faces.emplace_back(std::vector<unsigned>{0, 3, 4});
-    m.faces.emplace_back(std::vector<unsigned>{0, 4, 5});
-    m.faces.emplace_back(std::vector<unsigned>{0, 5, 1});
-    m.faces.emplace_back(std::vector<unsigned>{11, 7, 6});
-    m.faces.emplace_back(std::vector<unsigned>{11, 8, 7});
-    m.faces.emplace_back(std::vector<unsigned>{11, 9, 8});
-    m.faces.emplace_back(std::vector<unsigned>{11, 10, 9});
-    m.faces.emplace_back(std::vector<unsigned>{11, 6, 10});
-    m.faces.emplace_back(std::vector<unsigned>{6, 1, 10});
-    m.faces.emplace_back(std::vector<unsigned>{1, 6, 2});
-    m.faces.emplace_back(std::vector<unsigned>{1, 5, 10});
-    m.faces.emplace_back(std::vector<unsigned>{6, 7, 2});
-    m.faces.emplace_back(std::vector<unsigned>{3, 2, 7});
-    m.faces.emplace_back(std::vector<unsigned>{3, 7, 8});
-    m.faces.emplace_back(std::vector<unsigned>{4, 3, 8});
-    m.faces.emplace_back(std::vector<unsigned>{4, 8, 9});
-    m.faces.emplace_back(std::vector<unsigned>{5, 4, 9});
-    m.faces.emplace_back(std::vector<unsigned>{5, 9, 10});
+    static constexpr unsigned faces[20][3] = {
+            {0,  1,  2},
+            {0,  2,  3},
+            {0,  3,  4},
+            {0,  4,  5},
+            {0,  5,  1},
+            {11, 7,  6},
+            {11, 8,  7},
+            {11, 9,  8},
+            {11, 10, 9},
+            {11, 6,  10},
+            {6,  1,  10},
+            {1,  6,  2},
+            {1,  5,  10},
+            {6,  7,  2},
+            {3,  2,  7},
+            {3,  7,  8},
+            {4,  3,  8},
+            {4,  8,  9},
+            {5,  4,  9},
+            {5,  9,  10}
+    };
+
+    for (auto i = 0u; i < 20u; ++i)
+        m.faces.push_back(std::vector<unsigned>{faces[i][0], faces[i][1], faces[i][2]});
 
     return m;
 }
