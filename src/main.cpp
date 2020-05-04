@@ -32,15 +32,23 @@ int main(int argc, char* argv[]) {
     }
 
     Engine eng(width, height);
-    if (render_mode == "2D") {
-        if (yaml_file.empty()) yaml_file = "../grammars/2D.yaml";
-        eng.render(yaml_file);
-    } else if (render_mode == "3D") {
-        if (yaml_file.empty()) yaml_file = "../grammars/3D.yaml";
-        eng.render3D(yaml_file);
-    } else {
-        std::cerr << render_mode + ": unrecognized render mode use 2D or 3D" << std::endl;
-        return 3;
+    try {
+        if (render_mode == "2D") {
+            if (yaml_file.empty()) yaml_file = "../grammars/2D.yaml";
+            eng.render(yaml_file);
+        } else if (render_mode == "3D") {
+            if (yaml_file.empty()) yaml_file = "../grammars/3D.yaml";
+            eng.render3D(yaml_file);
+        } else {
+            std::cerr << render_mode + ": unrecognized render mode use 2D or 3D" << std::endl;
+            return 3;
+        }
+    } catch (std::invalid_argument const& e) {
+        std::cerr << e.what() << std::endl;
+        return 4;
+    } catch (YAML::Exception const& e) {
+        std::cerr << e.what() << std::endl;
+        return 5;
     }
 
     return 0;

@@ -265,6 +265,7 @@ static grammar_ptr parse_parametric_rules(YAML::Node const& rules, std::string c
 std::vector<GrammarData> Engine::load_grammars(const std::string& path) const {
     std::vector<GrammarData> gds;
     YAML::Node node = YAML::LoadFile(path);
+    if (!node["grammars"]) throw std::invalid_argument(path + ": no grammars where found.");
     auto gs = node["grammars"];
     for (YAML::const_iterator git = gs.begin(); git != gs.end(); ++git) {
         auto name = git->first.as<std::string>();
@@ -308,8 +309,6 @@ std::vector<GrammarData> Engine::load_grammars(const std::string& path) const {
 
 void Engine::render(std::string const& path) const {
     auto gds = load_grammars(path);
-    if (gds.empty())
-        throw std::invalid_argument("No grammar found in Yaml file");
     auto gidx = 0u;
     GrammarData& gd = gds[gidx];
 
