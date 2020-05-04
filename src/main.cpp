@@ -26,6 +26,11 @@ int main(int argc, char* argv[]) {
         return 2;
     }
 
+    if (vm.count("help")) {
+        std::cout << desc << std::endl;
+        return 1;
+    }
+
     Engine eng(width, height);
     if (render_mode == "2D") {
         if (yaml_file.empty()) yaml_file = "../grammars/2D.yaml";
