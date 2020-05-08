@@ -75,6 +75,7 @@ double get_length(std::string const& s, unsigned& i, double default_length) {
 
 Leaf Engine::draw_leaf(std::string const& s, unsigned& i,
                        std::stack<SeaTurtle>& turtles, double angle, double length) const {
+    double real_angle = angle;
     double real_length = length;
     angle = angle * M_PI / 180;
     Leaf l(turtles.top().color_index);
@@ -89,22 +90,28 @@ Leaf Engine::draw_leaf(std::string const& s, unsigned& i,
                 turtles.pop();
                 break;
             case '+':
-                turtle.rotate(Mat3f::R(turtle.u, angle));
+                real_angle = get_angle(s, i, angle);
+                turtle.rotate(Mat3f::R(turtle.u, real_angle));
                 break;
             case '-':
-                turtle.rotate(Mat3f::R(turtle.u, -angle));
+                real_angle = get_angle(s, i, angle);
+                turtle.rotate(Mat3f::R(turtle.u, -real_angle));
                 break;
             case '&':
-                turtle.rotate(Mat3f::R(turtle.l, angle));
+                real_angle = get_angle(s, i, angle);
+                turtle.rotate(Mat3f::R(turtle.l, real_angle));
                 break;
             case '^':
-                turtle.rotate(Mat3f::R(turtle.l, -angle));
+                real_angle = get_angle(s, i, angle);
+                turtle.rotate(Mat3f::R(turtle.l, -real_angle));
                 break;
             case '\\':
-                turtle.rotate(Mat3f::R(turtle.d, angle));
+                real_angle = get_angle(s, i, angle);
+                turtle.rotate(Mat3f::R(turtle.d, real_angle));
                 break;
             case '/':
-                turtle.rotate(Mat3f::R(turtle.d, -angle));
+                real_angle = get_angle(s, i, angle);
+                turtle.rotate(Mat3f::R(turtle.d, -real_angle));
                 break;
             case '|':
                 turtle.rotate(Mat3f::R(turtle.u, M_PI));
