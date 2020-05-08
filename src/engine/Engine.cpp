@@ -143,7 +143,8 @@ Leaf Engine::draw_leaf(std::string const& s, unsigned& i,
 
 
 Plant Engine::draw(const std::string& s, double angle, double length,
-                   double thickness, double sph_radius, std::optional<Tropism> const& t) const {
+                   double thickness, double sph_radius, unsigned sph_recursion,
+                   std::optional<Tropism> const& t) const {
     double real_angle = angle;
     double real_length = length;
     Plant plt;
@@ -206,7 +207,7 @@ Plant Engine::draw(const std::string& s, double angle, double length,
                 plt.add_leaf(l);
                 break;
             case 'b':
-                ico = IcoSphere(turtle.o, sph_radius, turtle.color_index);
+                ico = IcoSphere(turtle.o, sph_radius, turtle.color_index, sph_recursion);
                 plt.add_icosphere(ico);
                 break;
             case 'F':
@@ -293,6 +294,7 @@ std::vector<GrammarData> Engine::load_grammars(const std::string& path) const {
             double length = g["length"] ? g["length"].as<double>() : 1;
             double thickness = g["thickness"] ? g["thickness"].as<double>() : 1;
             double sph_radius = g["sph_radius"] ? g["sph_radius"].as<double>() : 1;
+            unsigned sph_recursion = g["sph_recursion"] ? g["sph_recursion"].as<unsigned>() : 0;
             materials mtls{};
             if (g["colors"]) {
                 for (const auto& c : g["colors"])
@@ -308,7 +310,7 @@ std::vector<GrammarData> Engine::load_grammars(const std::string& path) const {
                 const auto& tropism = g["tropism"];
                 t = Tropism(tropism["T"].as<Vec3f>(), tropism["bend"].as<double>());
             }
-            gds.emplace_back(name, std::move(gram), angle, n, length, thickness, sph_radius, mtls, c, t);
+            gds.emplace_back(name, std::move(gram), angle, n, length, thickness, sph_radius, sph_recursion, mtls, c, t);
         } catch (YAML::Exception const& e) {
             std::cerr << name << ": " << e.what() << std::endl;
         }
@@ -376,7 +378,7 @@ void Engine::render3D(const std::string& path) const {
     for (const auto& gd : gds) {
         std::cerr << "Generating " << gd.name << "..." << std::flush;
         try {
-            Plant p = draw(gd.g->generate(gd.n), gd.angle, gd.length, gd.thickness, gd.sph_radius, gd.t);
+            Plant p = draw(gd.g->generate(gd.n), gd.angle, gd.length, gd.thickness, gd.sph_radius, gd.sph_recursion, gd.t);
             std::string output = "../output/";
             output += gd.name + ".";
             p.save_plant(output + "obj", output + "mtl", gd.mtls);

@@ -82,14 +82,15 @@ struct GrammarData {
     double angle;
     int n;
     double length, thickness, sph_radius;
+    unsigned sph_recursion;
     materials mtls;
     Camera cam;
     std::optional<Tropism> t;
 
     GrammarData(std::string name, grammar_ptr g, double angle, int n, double length, double thickness,
-                double sph_radius, materials mtls, const Camera& cam, std::optional<Tropism> const& t)
+                double sph_radius, unsigned sph_recursion, materials mtls, const Camera& cam, std::optional<Tropism> const& t)
             : name(std::move(name)), g(std::move(g)), angle(angle), n(n), length(length), thickness(thickness),
-              sph_radius(sph_radius), mtls(std::move(mtls)), cam(cam), t(t){}
+              sph_radius(sph_radius), sph_recursion(sph_recursion), mtls(std::move(mtls)), cam(cam), t(t){}
 };
 
 class Engine {
@@ -100,7 +101,7 @@ public:
     [[nodiscard]] Leaf
     draw_leaf(std::string const& s, unsigned& i, std::stack<SeaTurtle>& turtles, double angle, double length) const;
     [[nodiscard]] Plant
-    draw(std::string const& s, double angle, double length, double thickness, double sph_radius, std::optional<Tropism> const& t) const;
+    draw(std::string const& s, double angle, double length, double thickness, double sph_radius, unsigned sph_recursion, std::optional<Tropism> const& t) const;
     [[nodiscard]] std::vector<GrammarData> load_grammars(std::string const& path) const;
     void render(std::string const& path) const;
     void render3D(std::string const& path) const;

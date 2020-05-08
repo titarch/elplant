@@ -180,26 +180,26 @@ grammars:
     angle: 60
     length: 8
     thickness: 2
-    n: 10
+    n: 50
     colors:
       - name: green
         rgb: [0.0, 1.0, 0.0]
-    axiom: "M(0,0)M(60,10)M(130,15)M(160,30)"
+    axiom: "M(0,0)M(60,20)M(130,25)M(160,40)"
     rules:
       M:
         parameters: ["t", "c"]
         conds:
           - parameter: "c"
-            cond: "eq"
+            op: "eq"
             value: 0
-            rvalue: "[&(90)+(t)f(10)^(90){.L(0, 0, 0)}]"
+            rvalue: "[&(90)+(t)f(10)^(90){.L(0, 0)}]"
           - parameter: "c"
-            cond: "gt"
+            op: "gt"
             rvalue: "M(t,c-1)"
       L:
-        parameters: ['t']
+        parameters: ['t', 'd']
         conds:
-          - rvalue: "G(LA,RA)[-B(t).][L(t+1)][+B(t).]"
+          - rvalue: "G(LA,RA)[-B(t).][&(d)L(t+1,d+LD)][+B(t).]"
       B:
         parameters: ['t']
         conds:
@@ -220,7 +220,7 @@ grammars:
         RB: 1
         PD: 0
         LC: 5
-        LD: 1
+        LD: 0.5
 
   sphere:
     type: "classic"
@@ -231,10 +231,11 @@ grammars:
     length: 3
     thickness: 0.5
     sph_radius: 1
+    sph_recursion: 2
     n: 3
     colors:
-      - name: green
-        rgb: [0.0, 0.137, 0.0]
+      - name: blue
+        rgb: [0.0, 0.0, 1.0]
 
 #  invalid_grammar_1:
 #    axiom: "x"

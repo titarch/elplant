@@ -25,7 +25,8 @@ Mesh Plant::to_mesh(unsigned cylinder_faces, unsigned cylinder_rings) const {
     return m;
 }
 
-void Plant::save_plant(std::string const& obj_path, std::string const& mtl_path, std::vector<Material> const& materials) const {
+void Plant::save_plant(std::string const& obj_path, std::string const& mtl_path,
+        std::vector<Material> const& materials) const {
     std::ofstream obj_out(obj_path);
     size_t num_vertices = 0, num_cyls = 0, num_leaves = 0, num_ico = 0;
     Mesh m;

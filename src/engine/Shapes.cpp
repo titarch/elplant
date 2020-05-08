@@ -128,7 +128,7 @@ TriangleMesh Leaf::to_triangles() const {
     return tm;
 }
 
-Mesh IcoSphere::to_mesh() const {
+Mesh IcoSphere::get_unit_sphere_mesh() const {
     Mesh m;
     const float horizontal_angle = M_PI / 180 * 72;    // 72 degree = 360 / 5
     const float elevation = atanf(1.0f / 2);  // elevation = 26.565 degree
@@ -160,7 +160,6 @@ Mesh IcoSphere::to_mesh() const {
 
     // Get surface normals
     for (auto& v: m.vertices) {
-        v += center;
         m.normals.emplace_back((v - center));
     }
 
@@ -190,6 +189,56 @@ Mesh IcoSphere::to_mesh() const {
 
     for (auto i = 0u; i < 20u; ++i)
         m.faces.push_back(std::vector<unsigned>{faces[i][0], faces[i][1], faces[i][2]});
+
+    return m;
+}
+
+Mesh IcoSphere::subdivide_mesh(Mesh const& m) const {
+    Mesh res;
+    auto faces = m.faces;
+    auto idx = 0u;
+    for (auto i = 0u; i < faces.size(); i++) {
+        auto v1 = m.vertices[faces[i][0]];
+        auto v2 = m.vertices[faces[i][1]];
+        auto v3 = m.vertices[faces[i][2]];
+
+        // Compute center of each triangle edge, rescaled to radius of sphere
+        auto mid1 = radius * (v1 + v2).normalized();
+        auto mid2 = radius * (v2 + v3).normalized();
+        auto mid3 = radius * (v1 + v3).normalized();
+
+        const Vec3f verts[12] = {
+            v1, mid1, mid3,
+            mid1, v2, mid2,
+            mid1, mid2, mid3,
+            mid3, mid2, v3
+        };
+
+        // Add vertices and normals
+        for (auto& v: verts) {
+            res.vertices.emplace_back(v);
+            res.normals.emplace_back((v - center));
+        }
+
+        // Add new triangles in the correct order
+        for(auto j = 0u; j < 4; j++)
+            res.faces.emplace_back(std::vector<unsigned>{idx + j * 3, idx + j * 3 + 1, idx + j * 3 + 2});
+
+        idx += 12;
+
+    }
+
+    return res;
+}
+
+Mesh IcoSphere::to_mesh() const {
+    Mesh m = get_unit_sphere_mesh();
+
+    for (auto i = 0u; i < n; i++)
+        m = subdivide_mesh(m);
+
+    for (auto& v: m.vertices)
+        v += center;
 
     return m;
 }

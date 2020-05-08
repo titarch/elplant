@@ -97,13 +97,15 @@ struct Leaf {
 struct IcoSphere {
     Vec3f center;
     double radius;
-    unsigned color_index;
+    unsigned color_index, n;
 
-    IcoSphere() : center{}, radius{}, color_index{} {}
+    IcoSphere() : center{}, radius{}, color_index{}, n{} {}
 
-    IcoSphere(Vec3f const& center, double radius, unsigned color_index)
-            : center(center), radius(radius), color_index(color_index) {}
+    IcoSphere(Vec3f const& center, double radius, unsigned color_index, unsigned n)
+            : center(center), radius(radius), color_index(color_index), n(n) {}
 
+    Mesh get_unit_sphere_mesh() const;
+    Mesh subdivide_mesh(Mesh const& m) const;
     [[nodiscard]] Mesh to_mesh() const;
 
     friend YAML::Emitter& operator<<(YAML::Emitter& out, IcoSphere const& s) {
