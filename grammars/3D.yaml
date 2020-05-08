@@ -175,6 +175,53 @@ grammars:
       - name: red
         rgb: [0.8, 0.02, 0.0]
 
+  grass:
+    type: "parametric"
+    angle: 60
+    length: 8
+    thickness: 2
+    n: 10
+    colors:
+      - name: green
+        rgb: [0.0, 1.0, 0.0]
+    axiom: "M(0,0)M(60,10)M(130,15)M(160,30)"
+    rules:
+      M:
+        parameters: ["t", "c"]
+        conds:
+          - parameter: "c"
+            cond: "eq"
+            value: 0
+            rvalue: "[&(90)+(t)f(10)^(90){.L(0, 0, 0)}]"
+          - parameter: "c"
+            cond: "gt"
+            rvalue: "M(t,c-1)"
+      L:
+        parameters: ['t']
+        conds:
+          - rvalue: "G(LA,RA)[-B(t).][L(t+1)][+B(t).]"
+      B:
+        parameters: ['t']
+        conds:
+          - parameter: 't'
+            op: 'gt'
+            rvalue: "G(LB,RB)B(t-PD)"
+          - parameter: 't'
+            op: 'eq'
+            rvalue: ""
+      G:
+        parameters: ['s', 'r']
+        conds:
+          - rvalue: "G(s*r,r)"
+      map:
+        LA: 7
+        RA: 1
+        LB: 0.5
+        RB: 1
+        PD: 0
+        LC: 5
+        LD: 1
+
   sphere:
     type: "classic"
     axiom: "A"
