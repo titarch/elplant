@@ -98,7 +98,7 @@ public:
 
     [[nodiscard]] lines draw(std::string const& s, double angle, double length) const;
     [[nodiscard]] Leaf
-    draw_leaf(std::string const& s, unsigned& index, std::stack<SeaTurtle>& turtles, double angle, double length) const;
+    draw_leaf(std::string const& s, unsigned& i, std::stack<SeaTurtle>& turtles, double angle, double length) const;
     [[nodiscard]] Plant
     draw(std::string const& s, double angle, double length, double thickness, double sph_radius, std::optional<Tropism> const& t) const;
     [[nodiscard]] std::vector<GrammarData> load_grammars(std::string const& path) const;

@@ -73,15 +73,15 @@ double get_length(std::string const& s, unsigned& i, double default_length) {
 }
 
 
-Leaf Engine::draw_leaf(std::string const& s, unsigned& index,
+Leaf Engine::draw_leaf(std::string const& s, unsigned& i,
                        std::stack<SeaTurtle>& turtles, double angle, double length) const {
     double real_length = length;
     angle = angle * M_PI / 180;
     Leaf l(turtles.top().color_index);
 
-    while (s[index] != '}') {
+    while (s[i] != '}') {
         auto& turtle = turtles.top();
-        switch (s[index]) {
+        switch (s[i]) {
             case '[':
                 turtles.push(turtle);
                 break;
@@ -115,8 +115,11 @@ Leaf Engine::draw_leaf(std::string const& s, unsigned& index,
             case '.':
                 l.add_vertex(turtle.o);
                 break;
+            case '(':
+                for (; s[i] != ')'; ++i);
+                break;
             case 'G':
-                real_length = get_param(s, index, length);
+                real_length = get_param(s, i, length);
                 turtle.o += turtle.d * real_length;
                 break;
             case 'f':
@@ -126,7 +129,7 @@ Leaf Engine::draw_leaf(std::string const& s, unsigned& index,
             default:
                 break;
         }
-        index++;
+        i++;
     }
 
     return l;
