@@ -49,12 +49,12 @@ grammars:
     colors:
       - name: green
         rgb: [0.0, 1.0, 0.0]
-    axiom: "{.A(0)}"
+    axiom: "{.A(0, 0, 0)}"
     rules:
       A:
-        parameters: ['t']
+        parameters: ['t', 'r', 'd']
         conds:
-          - rvalue: "G(LA,RA)[-B(t).][A(t+1)][+B(t).]"
+          - rvalue: "G(LA,RA)[-B(t).][&(d)A(t+1,r+LC,d+LD)][+B(t).]"
       B:
         parameters: ['t']
         conds:
@@ -74,6 +74,8 @@ grammars:
         LB: 10.0
         RB: 1
         PD: 0.5
+        LC: 5
+        LD: 1
 
   pointy_leaf:
     type: "parametric"
@@ -203,131 +205,60 @@ grammars:
 #          - op: "gt"
 #            rvalue: "a(t-1,5)"
 
-  spiral_tree:
+  twig:
     type: "parametric"
-    axiom: "A(10,1)"
-    camera:
-      origin: [0, 60, 30]
-      forward: [0, -1, 0]
-      up: [1, 0, 0]
-    n: 10
+    angle: 60
+    length: 20
+    thickness: 7
+    sph_radius: 0.5
+    n: 20
     colors:
       - name: green
         rgb: [0.0, 1.0, 0.0]
+    axiom: "T(0){/(45).L(0, 0, 10)}"
     rules:
-      A:
-        parameters: ['l', 'w']
+      T:
+        parameters: ['t']
         conds:
-          - rvalue: "!(w)F(l)[&(a1)B(l*r1,w*wr)]/(180)[&(a2)B(l*r2,w*wr)]"
+          - parameter: 't'
+            op: 'eq'
+            rvalue: "T(1)+(1)F(40)[{.L(0,0,SA)}][{/(90).L(0,0,SA)}][{/(-90).L(0,0,SA)}][/(180){.L(0,0,SA)}]"
+          - parameter: 't'
+            op: 'eq'
+            value: 1
+            rvalue: "T(0)&(1)F(40)[/(45){.L(0,0,SA)}][{/(135).L(0,0,SA)}][{/(-45).L(0,0,SA)}][/(-135){.L(0,0,SA)}]"
+      F:
+        parameters: ['t']
+        conds:
+          - rvalue: "F(t+GR)"
+      L:
+        parameters: ['t', 'r', 'd']
+        conds:
+          - rvalue: "G(LA,RA)[-B(t).][&(d)L(t+1,r+LC,d-LD)][+B(t).]"
       B:
-        parameters: ['l', 'w']
-        conds:
-          - rvalue: "!(w)F(l)[+(a1)$B(l*r1,w*wr)][-(60)$B(l*r2,w*wr)]"
-      map:
-        r1: 0.9
-        r2: 0.8
-        a1: 35
-        a2: 35
-        wr: 0.707
-
-  christmas_spiral_tree:
-    type: "parametric"
-    axiom: "A(10,1,11)"
-    n: 11
-    camera:
-      origin: [0, 60, 30]
-      forward: [0, -1, 0]
-      up: [1, 0, 0]
-    rules:
-      A:
-        parameters: ['l', 'w', 't']
-        conds:
-          - rvalue: "!(w)F(l)[&(a1)B(l*r1,w*wr,t-1)]/(180)[&(a2)B(l*r2,w*wr,t-1)]"
-      B:
-        parameters: ['l', 'w', 't']
+        parameters: ['t']
         conds:
           - parameter: 't'
             op: 'gt'
-            rvalue: "!(w)F(l)[+(a1)$B(l*r1,w*wr,t-1)][-(60)$B(l*r2,w*wr,t-1)]"
+            rvalue: "G(LB,RB)B(t-PD)"
           - parameter: 't'
             op: 'eq'
-            rvalue: "[`b]"
+            rvalue: ""
+      G:
+        parameters: ['s', 'r']
+        conds:
+          - rvalue: "G(s*r,r)"
       map:
-        r1: 0.9
-        r2: 0.7
-        a1: 10
-        a2: 60
-        wr: 0.707
-    colors:
-      - name: brown
-        rgb: [0.38, 0.24, 0.16]
-      - name: green
-        rgb: [0.0, 1.0, 0.0]
+        LA: 5
+        RA: 1.2
+        LB: 10.0
+        RB: 1
+        PD: 0.5
+        LC: 5
+        LD: 0.5
+        GR: 10
+        SA: 15
 
-  dead_tree:
-    type: "parametric"
-    axiom: "A(10, 1)"
-    n: 10
-    camera:
-      origin: [0, 50, 30]
-      forward: [0, -1, 0]
-      up: [1, 0, 0]
-    colors:
-      - name: brown
-        rgb: [0.38, 0.24, 0.16]
-    rules:
-      A:
-        parameters: ['l', 'w']
-        conds:
-          - rvalue: "!(w)F(l)[&(a0)B(l*r2,w*wr)]/(d)A(l*r1,w*wr)"
-      B:
-        parameters: ['l', 'w']
-        conds:
-          - rvalue: "!(w)F(l)[&(a0)B(l*r2,w*wr)]/(d)A(l*r1,w*wr)"
-      C:
-        parameters: ['l', 'w']
-        conds:
-          - rvalue: "!(w)F(l)[+(a2)$B(l*r2,w*wr)]B(l*r1,w*wr)"
-      map:
-        r1: 0.9
-        r2: 0.6
-        a0: 45
-        a2: 45
-        d: 137.5
-        wr: 0.707
-
-  weeping_willow:
-    type: "parametric"
-    axiom: "!(1)F(200)/(45)A"
-    n: 6
-    colors:
-      - name: green
-        rgb: [0.0, 1.0, 0.0]
-    camera:
-      origin: [0, 700, 400]
-      forward: [0, -1, 0]
-      up: [1, 0, 0]
-    tropism:
-      T: [-0.02, 0.0, -1.0]
-      bend: 0.27
-    rules:
-      A:
-        conds:
-          - rvalue: "!(vr)F(50)[&(a)F(50)A]/(d1)[&(a)F(50)A]/(d2)[&(a)F(50)A]"
-      B:
-        parameters: ['l']
-        conds:
-          - rvalue: "F(l*lr)"
-      "!":
-        parameters: ['w']
-        conds:
-          - rvalue: "!(w*vr)"
-      map:
-        d1: 112.5
-        d2: 157.50
-        a: 22.50
-        lr: 1.790
-        vr: 1.5
 
   womping_willow:
     type: "parametric"
