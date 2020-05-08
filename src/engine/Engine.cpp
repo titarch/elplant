@@ -321,7 +321,7 @@ std::vector<GrammarData> Engine::load_grammars(const std::string& path) const {
 void Engine::render(std::string const& path) const {
     auto gds = load_grammars(path);
     auto gidx = 0u;
-    GrammarData& gd = gds[gidx];
+    GrammarData gd = gds[gidx];
 
     auto lines = draw(gd.g->generate(gd.n), gd.angle, 1);
     normalize(lines, (float) width_, (float) height_, 0.9);
