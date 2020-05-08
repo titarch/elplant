@@ -77,7 +77,6 @@ Leaf Engine::draw_leaf(std::string const& s, unsigned& i,
                        std::stack<SeaTurtle>& turtles, double angle, double length) const {
     double real_angle = angle;
     double real_length = length;
-    angle = angle * M_PI / 180;
     Leaf l(turtles.top().color_index);
 
     while (s[i] != '}') {
