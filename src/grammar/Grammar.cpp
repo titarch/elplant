@@ -87,6 +87,7 @@ String ParamRule::evaluate(std::vector<double> const& values_) const {
 
 String ParamGrammar::generate_rec(String const& in, int cur_rec, int max_rec) const {
     String out{};
+    if (cur_rec == max_rec) return in;
     for (auto c = in.cbegin(); c != in.cend();) {
         if (rules_.contains(*c)) {
             auto const& rule_c = *c;
@@ -118,7 +119,6 @@ String ParamGrammar::generate_rec(String const& in, int cur_rec, int max_rec) co
             ++c;
         }
     }
-    if (cur_rec == max_rec) return out;
     return generate_rec(out, cur_rec + 1, max_rec);
 }
 
