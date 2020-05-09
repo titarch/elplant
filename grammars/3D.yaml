@@ -49,12 +49,12 @@ grammars:
     colors:
       - name: green
         rgb: [0.0, 1.0, 0.0]
-    axiom: "{.A(0, 0, 0)}"
+    axiom: "{.A(0, 10)}"
     rules:
       A:
-        parameters: ['t', 'r', 'd']
+        parameters: ['t', 'd']
         conds:
-          - rvalue: "G(LA,RA)[-B(t).][&(d)A(t+1,r+LC,d+LD)][+B(t).]"
+          - rvalue: "G(LA,RA)[-B(t).][&(d)A(t+1,d-LD)][+B(t).]"
       B:
         parameters: ['t']
         conds:
@@ -70,10 +70,10 @@ grammars:
           - rvalue: "G(s*r,r)"
       map:
         LA: 5
-        RA: 1.2
-        LB: 10.0
-        RB: 1
-        PD: 0.5
+        RA: 1.1
+        LB: 1.0
+        RB: 1.2
+        PD: 1.0
         LC: 5
         LD: 1
 
