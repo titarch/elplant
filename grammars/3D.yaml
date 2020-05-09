@@ -314,3 +314,102 @@ grammars:
         A2: 20
         FU: 3
 
+  womping_willow:
+    type: "parametric"
+    axiom: "!(1)F(200)/(45)A"
+    n: 6
+    colors:
+      - name: green
+        rgb: [0.0, 1.0, 0.0]
+    camera:
+      origin: [0, 700, 400]
+      forward: [0, -1, 0]
+      up: [1, 0, 0]
+    tropism:
+      T: [-0.61, 0.77, -0.19]
+      bend: 0.40
+    rules:
+      A:
+        conds:
+          - rvalue: "!(vr)F(50)[&(a)F(50)A]/(d1)[&(a)F(50)A]/(d2)[&(a)F(50)A]"
+      B:
+        parameters: ['l']
+        conds:
+          - rvalue: "F(l*lr)"
+      "!":
+        parameters: ['w']
+        conds:
+          - rvalue: "!(w*vr)"
+      map:
+        d1: 180.00
+        d2: 252.00
+        a: 36.00
+        lr: 1.070
+        vr: 1.5
+
+  capsella:
+    type: "parametric"
+    axiom: "I(9)a(13)"
+    n: 36
+    angle: 18
+    camera:
+      origin: [0, 300, 150]
+      forward: [0, -1, 0]
+      up: [1, 0, 0]
+    colors:
+      - name: green
+        rgb: [0.0, 1.0, 0.0]
+    rules:
+      a:
+        parameters: ['t']
+        conds:
+          - parameter: 't'
+            op: 'gt'
+            value: 0
+            rvalue: "[&(70)L]/(137.5)I(10)a(t-1)"
+          - parameter: 't'
+            op: 'eq'
+            value: 0
+            rvalue: "[&(70)L]/(137.5)I(10)A"
+      A:
+        conds:
+          - rvalue: "[&(18)u(4)FFI(10)I(5)X(5)KKKK]/(137.5)I(8)A"
+      I:
+        parameters: ['t']
+        conds:
+          - parameter: 't'
+            op: 'gt'
+            value: 0
+            rvalue: "FI(t-1)"
+          - parameter: 't'
+            op: 'eq'
+            value: 0
+            rvalue: "F"
+      u:
+        parameters: ['t']
+        conds:
+          - parameter: 't'
+            op: 'gt'
+            value: 0
+            rvalue: "FI(t-1)"
+          - parameter: 't'
+            op: 'eq'
+            value: 0
+            rvalue: "&(9)"
+      L:
+        conds:
+          - rvalue: "[{.-FI(7)+FI(7)+FI(7)}][{.+FI(7)-FI(7)-FI(7)}]"
+      K:
+        conds:
+          - rvalue: "[&{.+FI(2)--FI(2)}][&{.-FI(2)++FI(2)}]/(90)"
+      X:
+        parameters: ['t']
+        conds:
+          - parameter: 't'
+            op: 'gt'
+            value: 0
+            rvalue: "X(t-1)"
+          - parameter: 't'
+            op: 'eq'
+            value: 0
+            rvalue: "^(50)[[-GGGG++[GGG[++G{.].].].++GGGG.--GGG.--G.}]%"
