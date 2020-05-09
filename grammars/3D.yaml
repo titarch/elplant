@@ -240,49 +240,56 @@ grammars:
 #  invalid_grammar_1:
 #    axiom: "x"
 #    rules:
-#      x: "xF"
-#
-#  invalid_grammar_2:
-#    type: "parametric"
-#    n: 20
-#    axiom: "a(10)"
-#    rules:
-#      a:
-#        parameters: ['t']
-#        conds:
-#          - op: "gt"
-#            rvalue: "a(t-1,5)"
-
-  twig:
+#      A: "[+A{.].C.}"
+#      B: "[-B{.].C.}"
+#      C: "GC"
+#    angle: 18
+#    length: 5
+#    thickness: 1
+#    n: 10
+#    colors:
+#      - name: green
+#        rgb: [0.0, 1.0, 0.0]
+  daisy:
     type: "parametric"
     angle: 60
-    length: 20
-    thickness: 7
-    sph_radius: 0.5
+    length: 10
+    thickness: 40
+    sph_radius: 120
+    sph_recursion: 4
     n: 20
     colors:
       - name: green
         rgb: [0.0, 1.0, 0.0]
-    axiom: "T(0){/(45).L(0, 0, 10)}"
+      - name: yellow
+        rgb: [1.0, 1.0, 0.0]
+      - name: white
+        rgb: [1.0, 1.0, 1.0]
+    axiom: "D(100)`b`T(0)T(1)"
     rules:
+      D:
+        parameters: ['l']
+        conds:
+          - rvalue: "F(l)&(A1)E(l)"
+      E:
+        parameters: ['l']
+        conds:
+          - rvalue: "F(l)+(A1)$E(l)"
       T:
         parameters: ['t']
         conds:
           - parameter: 't'
             op: 'eq'
-            rvalue: "T(1)+(1)F(40)[{.L(0,0,SA)}][{/(90).L(0,0,SA)}][{/(-90).L(0,0,SA)}][/(180){.L(0,0,SA)}]"
+            value: 0
+            rvalue: "[&(90)^(FU)[{.L(0,10)}]|[{.L(0,10)}]][&(90)+(10)^(FU)[{.L(0,10)}]|[{.L(0,10)}]][&(90)+(30)^(FU)[{.L(0,10)}]|[{.L(0,10)}]][&(90)+(60)^(FU)[{.L(0,10)}]|[{.L(0,10)}]][&(90)+(90)^(FU)[{.L(0,10)}]|[{.L(0,10)}]][&(90)+(120)^(FU)[{.L(0,10)}]|[{.L(0,10)}]][&(90)+(150)^(FU)[{.L(0,10)}]|[{.L(0,10)}]][&(90)+(180)^(FU)[{.L(0,10)}]|[{.L(0,10)}]][&(90)+(210)^(FU)[{.L(0,10)}]|[{.L(0,10)}]]"
           - parameter: 't'
             op: 'eq'
             value: 1
-            rvalue: "T(0)&(1)F(40)[/(45){.L(0,0,SA)}][{/(135).L(0,0,SA)}][{/(-45).L(0,0,SA)}][/(-135){.L(0,0,SA)}]"
-      F:
-        parameters: ['t']
-        conds:
-          - rvalue: "F(t+GR)"
+            rvalue: "[&(90)+(15)&(FU)[{.L(0,10)}]|[{.L(0,10)}]][&(90)+(45)&(FU)[{.L(0,10)}]|[{.L(0,10)}]][&(90)+(75)&(FU)[{.L(0,10)}]|[{.L(0,10)}]][&(105)+(70)&(FU)[{.L(0,10)}]|[{.L(0,10)}]][&(90)+(135)&(FU)[{.L(0,10)}]|[{.L(0,10)}]][&(90)+(165)&(FU)[{.L(0,10)}]|[{.L(0,10)}]][&(90)+(195)&(FU)[{.L(0,10)}]|[{.L(0,10)}]][&(90)+(225)&(FU)[{.L(0,10)}]|[{.L(0,10)}]]"
       L:
-        parameters: ['t', 'r', 'd']
+        parameters: ['t', 'd']
         conds:
-          - rvalue: "G(LA,RA)[-B(t).][&(d)L(t+1,r+LC,d-LD)][+B(t).]"
+          - rvalue: "G(LA,RA)[-B(t).][L(t+1,d-LD)][+B(t).]"
       B:
         parameters: ['t']
         conds:
@@ -302,108 +309,8 @@ grammars:
         LB: 10.0
         RB: 1
         PD: 0.5
-        LC: 5
         LD: 0.5
-        GR: 10
-        SA: 15
+        A1: 5
+        A2: 20
+        FU: 3
 
-
-  womping_willow:
-    type: "parametric"
-    axiom: "!(1)F(200)/(45)A"
-    n: 6
-    colors:
-      - name: green
-        rgb: [0.0, 1.0, 0.0]
-    camera:
-      origin: [0, 700, 400]
-      forward: [0, -1, 0]
-      up: [1, 0, 0]
-    tropism:
-      T: [-0.61, 0.77, -0.19]
-      bend: 0.40
-    rules:
-      A:
-        conds:
-          - rvalue: "!(vr)F(50)[&(a)F(50)A]/(d1)[&(a)F(50)A]/(d2)[&(a)F(50)A]"
-      B:
-        parameters: ['l']
-        conds:
-          - rvalue: "F(l*lr)"
-      "!":
-        parameters: ['w']
-        conds:
-          - rvalue: "!(w*vr)"
-      map:
-        d1: 180.00
-        d2: 252.00
-        a: 36.00
-        lr: 1.070
-        vr: 1.5
-
-  capsella:
-    type: "parametric"
-    axiom: "I(9)a(13)"
-    n: 36
-    angle: 18
-    camera:
-      origin: [0, 300, 150]
-      forward: [0, -1, 0]
-      up: [1, 0, 0]
-    colors:
-      - name: green
-        rgb: [0.0, 1.0, 0.0]
-    rules:
-      a:
-        parameters: ['t']
-        conds:
-          - parameter: 't'
-            op: 'gt'
-            value: 0
-            rvalue: "[&(70)L]/(137.5)I(10)a(t-1)"
-          - parameter: 't'
-            op: 'eq'
-            value: 0
-            rvalue: "[&(70)L]/(137.5)I(10)A"
-      A:
-        conds:
-          - rvalue: "[&(18)u(4)FFI(10)I(5)X(5)KKKK]/(137.5)I(8)A"
-      I:
-        parameters: ['t']
-        conds:
-          - parameter: 't'
-            op: 'gt'
-            value: 0
-            rvalue: "FI(t-1)"
-          - parameter: 't'
-            op: 'eq'
-            value: 0
-            rvalue: "F"
-      u:
-        parameters: ['t']
-        conds:
-          - parameter: 't'
-            op: 'gt'
-            value: 0
-            rvalue: "FI(t-1)"
-          - parameter: 't'
-            op: 'eq'
-            value: 0
-            rvalue: "&(9)"
-      L:
-        conds:
-          - rvalue: "[{.-FI(7)+FI(7)+FI(7)}][{.+FI(7)-FI(7)-FI(7)}]"
-      K:
-        conds:
-          - rvalue: "[&{.+FI(2)--FI(2)}][&{.-FI(2)++FI(2)}]/(90)"
-      X:
-        parameters: ['t']
-        conds:
-          - parameter: 't'
-            op: 'gt'
-            value: 0
-            rvalue: "X(t-1)"
-          - parameter: 't'
-            op: 'eq'
-            value: 0
-            rvalue: "^(50)[[-GGGG++[GGG[++G{.].].].++GGGG.--GGG.--G.}]%"
