@@ -7,6 +7,7 @@
 
 #include <string>
 #include <fstream>
+#include <optional>
 #include <SFML/Graphics.hpp>
 #include <utility>
 #include <yaml-cpp/yaml.h>
